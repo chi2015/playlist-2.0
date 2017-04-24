@@ -1,0 +1,39 @@
+<html>
+    <head>
+    	<title>Playlist 2</title>
+    	<link rel="stylesheet" type="text/css" href="playlist2.css?r=3" />
+    	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+	<body>
+	    <div class="main-block">
+	     <div class="header-title">Playlist</div>
+	     <div class="header">
+			<div class="main-menu" onclick="playlist.view.toggleLeftMenu()"></div>
+			<div class="left-menu vh-menu">
+				<div class="lm-item" onclick="playlist.view.latest()">Latest</div>
+				<div class="lm-item" onclick="playlist.view.current()">Current</div>
+				<div class="lm-item" onclick="#">Archive</div>
+				<div class="lm-item" onclick="#">Add</div>
+			</div>
+			<div class="date-block">
+				<div class="pl-prev" onclick="playlist.view.prev()"></div>
+				<input id="pl_date"></input>
+				<div class="pl-calendar" onclick="playlist.view.get()"></div>
+				<div class="pl-next" onclick="playlist.view.next()"></div>
+			</div>
+			<div class="pl-upload" title="Add playlist"></div>
+	       <!-- <button id="pl_current" onclick="playlist.view.current()">Current</button>
+	        <button id="pl_latest" onclick="playlist.view.latest()">Latest</button>
+	        <button id="pl_next" onclick="playlist.view.next()">Next</button>
+	        <button id="pl_prev" onclick="playlist.view.prev()">Prev</button>-->
+	     </div>
+	     <div id="playlist-content" class="list"></div>
+	    </div>
+	    <script type="text/javascript" src="jquery.min.3.1.1.js"></script>
+	    <script type="text/javascript" src="moment.min.2.18.1.js"></script>
+	    <script type="text/javascript" src="playlist.main.js?r=2"></script>
+	    <script type="text/javascript" src="playlist.model.js?r=21"></script>
+	    <script type="text/javascript" src="playlist.view.js?r=2"></script>
+	    <script type="text/javascript" src="main.js?r=2"></script>	
+	</body>
+</html>
