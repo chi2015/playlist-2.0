@@ -7,6 +7,14 @@ playlist.view = {
    	   this.$pl_content.on('touchmove', this.contentTouchMove.bind(this));
    	   $('.lm-item').on('click', this.toggleLeftMenu.bind(this));
    	   playlist.model.current(this.renderPlaylist.bind(this));
+   	   $('#pl_date').pl_calendar({
+   	   	$button : $('.pl-calendar'),
+   	   	yearRange : [2005,2017],
+   	   	setDate : function(date) {
+   	   		this.get(date);
+   	   	}.bind(this),
+   	   	is_mobile : $(window).width() < 800
+   	   }); 
    },
    renderLeftMenu : function() {
    
@@ -14,7 +22,7 @@ playlist.view = {
    renderPlaylist : function(data) {
      if (playlist.model.latest_date === data.date) $('#pl_next').hide();
      else $('#pl_next').show();
-     $('#pl_date').val(data.date);
+     $('#pl_date').val(this.formatDate(data.date));
      var alist_str = '', blist_str = '', clist_str = '';
      this.$pl_content.removeClass("pl-loading");
      this.$pl_content.empty();
@@ -35,8 +43,7 @@ playlist.view = {
                         +clist_str);
      
    },
-   get : function() {
-   	var pl_date = $('#pl_date').val();
+   get : function(pl_date) {
    	this.$pl_content.empty();
    	this.$pl_content.addClass("pl-loading");
    	playlist.model.get(pl_date, this.renderPlaylist.bind(this));
@@ -110,5 +117,25 @@ playlist.view = {
    		else $('.left-menu').removeClass('vh-menu');
    		this.lm_hidden = !this.lm_hidden;
    },
-   lm_hidden: true
+   lm_hidden: true,
+   formatDate : function(pl_date) {
+   		var month = moment.months()[moment(pl_date, "YYYY-MM-DD").get('month')];
+   		if ($(window).width() < 800) month = month.substr(0,3);
+   		var day = moment(pl_date, "YYYY-MM-DD").get('date');
+   		var day_suffix = '';
+   		if ($(window).width() >= 800)
+   		{
+   		switch (day) 
+   		{
+   			case 1:
+   			case 21:
+   			case 31: day_suffix = 'st'; break;
+   			case 2:
+   			case 22: day_suffix = 'nd'; break;
+   			case 3: day_suffix = 'rd'; break;
+   			default: day_suffix = 'th'; break;
+   		}
+   		}
+   		return day+day_suffix+' '+month+' '+moment(pl_date, "YYYY-MM-DD").get('year');
+   }
 };

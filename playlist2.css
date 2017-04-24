@@ -213,6 +213,7 @@ html, body {
 @media screen and (max-width: 800px) {
 	.pl-prev, .pl-next {
 		display: none;
+		width: 0;
 	}
 }
 
@@ -244,13 +245,14 @@ input#pl_date {
 	background-color: #313131;
 	color: #bbbbbb;
 	border: 0;
+	text-align: center;
 }
 
 @media screen and (max-width: 800px) and (orientation: landscape) {
 	input#pl_date {
 		width: 36vw;
 		height: 9vw;
-		font-size: 6vw;
+		font-size: 5vw;
 		padding: 2vw;
 	}
 }
@@ -259,7 +261,7 @@ input#pl_date {
 	input#pl_date {
 		width: 30vh;
 		height: 9vh;
-		font-size: 5vh;
+		font-size: 4.4vh;
 		padding: 2vh;
 	}
 }
@@ -270,9 +272,9 @@ input#pl_date {
 	}
 	
 	input#pl_date {
-		width: 180px;
+		width: 270px;
 		height: 50px;
-		font-size: 28px;
+		font-size: 26px;
 		padding: 7px;
 	}
 }

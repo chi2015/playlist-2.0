@@ -2,6 +2,7 @@
     <head>
     	<title>Playlist 2</title>
     	<link rel="stylesheet" type="text/css" href="playlist2.css?r=3" />
+    	<link rel="stylesheet" type="text/css" href="pl-calendar.css" />
     	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </head>
 	<body>
@@ -18,7 +19,7 @@
 			<div class="date-block">
 				<div class="pl-prev" onclick="playlist.view.prev()"></div>
 				<input id="pl_date"></input>
-				<div class="pl-calendar" onclick="playlist.view.get()"></div>
+				<div class="pl-calendar"></div>
 				<div class="pl-next" onclick="playlist.view.next()"></div>
 			</div>
 			<div class="pl-upload" title="Add playlist"></div>
@@ -31,6 +32,7 @@
 	    </div>
 	    <script type="text/javascript" src="jquery.min.3.1.1.js"></script>
 	    <script type="text/javascript" src="moment.min.2.18.1.js"></script>
+	    <script type="text/javascript" src="pl-calendar.js"></script>
 	    <script type="text/javascript" src="playlist.main.js?r=2"></script>
 	    <script type="text/javascript" src="playlist.model.js?r=21"></script>
 	    <script type="text/javascript" src="playlist.view.js?r=2"></script>
