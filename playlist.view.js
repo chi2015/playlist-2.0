@@ -5,7 +5,7 @@ playlist.view = {
    	   this.$pl_content.addClass("pl-loading");
    	   this.$pl_content.on('touchstart', this.contentTouchStart.bind(this));
    	   this.$pl_content.on('touchmove', this.contentTouchMove.bind(this));
-   	   $('.lm-item').on('click', this.toggleLeftMenu.bind(this));
+   	   $('.lm-item').on('click', function() {if ($(window).width() < 800) this.toggleLeftMenu();}.bind(this));
    	   playlist.model.current(this.renderPlaylist.bind(this));
    	   $('#pl_date').pl_calendar({
    	   	$button : $('.pl-calendar'),
@@ -15,6 +15,7 @@ playlist.view = {
    	   	}.bind(this),
    	   	is_mobile : $(window).width() < 800
    	   }); 
+   	   $('#pl_file').on('change', this.upload.bind(this));
    },
    renderLeftMenu : function() {
    
@@ -67,6 +68,22 @@ playlist.view = {
        this.$pl_content.empty();
        this.$pl_content.addClass("pl-loading");
        playlist.model.prev(playlist.model.actual_date, this.renderPlaylist.bind(this));
+   },
+   openfile : function() {
+   	$('#pl_file').click();
+   },
+   upload : function() {
+   	var file = document.getElementById('pl_file').files[0];
+	var reader = new FileReader();
+	reader.readAsText(file, 'UTF-8');
+	reader.onload = function(event) {
+		var result = event.target.result;
+    	var fileName = document.getElementById('pl_file').files[0].name; 
+    	$.post(playlist.model.upload_server, { data: result, name: fileName }, function(data) {
+    		data = JSON.parse(data);
+    		if (data.status == "ok" && data.pl_date) this.get(data.pl_date);
+    	}.bind(this));
+	}.bind(this);
    },
    getItemInfoClass : function(change) {
 		switch (change) {

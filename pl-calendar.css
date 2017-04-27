@@ -1,12 +1,5 @@
-* {
-  font-family: "Arial";
-}
-
-body {
-	margin: 0;
-}
-
 .calendar-main {
+  font-family: "Arial";
   background-color: #ffffcc;
   position: absolute;
   width: 500px;

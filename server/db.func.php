@@ -92,4 +92,117 @@
 	mysql_close($link);
 	return pl_get($last_date[0]);
     }
+    
+    function insert_playlist($songs_array, $pl_date)
+{ 
+	if (!preg_match('/^[0-9]{4}-[0-1]{1}[0-9]{1}-[0-3]{1}[0-9]{1}$/', $pl_date)) return [];
+
+        global $host, $user, $pass, $dbname;
+
+        $link = mysql_connect($host, $user, $pass)
+        or die("Could not connect : " . mysql_error());
+        mysql_select_db($dbname) or die("Could not select database");
+	
+	$query_check_exist = "SELECT COUNT(pl_date) FROM playlist WHERE pl_date='$pl_date'";
+	$result_check_exist = mysql_query($query_check_exist);
+	$count = mysql_fetch_row($result_check_exist);
+	if ($count[0]>0)
+	{
+		echo "Error: Playlist dated $pl_date is already exists!";
+		mysql_close($link);	
+		return false;
+	}
+
+	$num_songs = count($songs_array);
+
+	for ($i=0; $i<$num_songs; $i++)
+	{	
+		if (($songs_array[$i]["title"]=="") || ($songs_array[$i]["artist"]==""))
+		{
+			echo "Error: At least one of artists or songs is empty";
+			mysql_close($link);	
+			return false;
+		}
+
+		for ($j=0; $j<$i; $j++)
+			if (($songs_array[$i]["title"]==$songs_array[$j]["title"]) && ($songs_array[$i]["artist"]==$songs_array[$j]["artist"]))
+			{
+				echo "Error: playlist contains 2 or more the same songs!";
+				mysql_close($link);	
+				return false;
+			}
+	}
+
+	for ($i=0; $i<$num_songs; $i++)
+	{
+		$songs_array[$i]["title"] = htmlspecialchars($songs_array[$i]["title"], ENT_QUOTES);
+		$songs_array[$i]["artist"] = htmlspecialchars($songs_array[$i]["artist"], ENT_QUOTES);
+
+
+		$current_title = $songs_array[$i]["title"];
+		$current_artist = $songs_array[$i]["artist"];
+
+		$query_select_id = "SELECT id FROM songs WHERE title = '$current_title' AND artist = '$current_artist'";
+			$result_select_id = mysql_query($query_select_id);
+		if (!$result_select_id)
+		{
+			echo "Invalid query $query_select_id ".mysql_error()."</p>";
+			mysql_close($link);	
+			return false;
+		}
+
+		if (mysql_num_rows($result_select_id)==0)
+		{
+			$query_insert_new_song = "INSERT INTO songs (artist, title, date_appear) VALUES('$current_artist','$current_title', '$pl_date')";
+			$result_insert_new_song = mysql_query($query_insert_new_song);
+			if (!$result_insert_new_song)
+			{
+				echo "Invalid query $query_insert_new_song ".mysql_error()."</p>";
+				mysql_close($link);	
+				return false;
+			}
+
+			mysql_free_result($result_select_id);
+			$result_select_id = mysql_query($query_select_id);
+			if (!$result_select_id)
+			{
+				echo "Invalid query $query_select_id ".mysql_error()."</p>";
+				mysql_close($link);	
+				return false;
+			}
+
+
+		}
+
+		$line = mysql_fetch_row($result_select_id);
+		$song_id = $line[0];
+
+		$current_is_new = $songs_array[$i]["is_new"];
+
+		if ($current_is_new == 1)
+		{
+			$query_update_new_song = "UPDATE songs SET date_appear = '$pl_date' WHERE id = $song_id";
+			$result_update_new_song = mysql_query($query_update_new_song);
+			if (!$query_update_new_song)
+			{
+				echo "Invalid query $query_update_new_song ".mysql_error()."</p>";
+				mysql_close($link);	
+				return false;
+			}
+		}
+
+		$current_score = $songs_array[$i]["score"];
+		$query_insert_playlist = "INSERT INTO playlist (song_id, pl_date, score) VALUES ('$song_id','$pl_date','$current_score')";
+		$result_insert_pl = mysql_query($query_insert_playlist);
+		if (!$result_insert_pl)
+		{
+			echo "Insert query failed $query_insert_playlist: ".mysql_error();
+			mysql_close($link);	
+			return false;
+		}
+	}
+
+	mysql_close($link);	
+	return true;
+}
 ?>

@@ -1,5 +1,6 @@
 playlist.model = {
 	playlist_server : "http://chi2016.ru/playlist2/server/playlist.php",
+	upload_server : "http://chi2016.ru/playlist2/server/upload.php",
 	remote : function(action, params, cb) {
 	    console.log("remote request", action, params);
 	    params = params || {};
