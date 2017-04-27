@@ -2,6 +2,7 @@ playlist.view = {
    init : function() {
    	   if ($(window).width() >= 800) this.toggleLeftMenu();
    	   this.$pl_content = $('#playlist-content');
+   	   this.$main_block = $('.main-block');
    	   this.$pl_content.addClass("pl-loading");
    	   this.$pl_content.on('touchstart', this.contentTouchStart.bind(this));
    	   this.$pl_content.on('touchmove', this.contentTouchMove.bind(this));
@@ -15,7 +16,27 @@ playlist.view = {
    	   	}.bind(this),
    	   	is_mobile : $(window).width() < 800
    	   }); 
-   	   $('#pl_file').on('change', this.upload.bind(this));
+   	   $('#pl_file').on('change', this.changefile.bind(this));
+   	   this.counter = 0;
+   	   window.addEventListener("dragover", function(e) {
+    e.preventDefault();
+    this.counter++;
+    this.dragoverMain(e);
+}.bind(this));
+window.addEventListener("mouseout", function(e) {
+    e = e ? e : window.event;
+    var from = e.relatedTarget || e.toElement;
+    if (!from || from.nodeName == "HTML") {
+        // stop your drag event here
+        // for now we can just use an alert
+        $('.pl-dragover').remove();
+    }
+}.bind(this));
+
+window.addEventListener("drop", function(e) {
+    e.preventDefault();
+    this.dropMain(e);
+}.bind(this));
    },
    renderLeftMenu : function() {
    
@@ -72,13 +93,16 @@ playlist.view = {
    openfile : function() {
    	$('#pl_file').click();
    },
-   upload : function() {
+   changefile : function() {
    	var file = document.getElementById('pl_file').files[0];
+   	this.upload(file);
+   },
+   upload : function(file) {
 	var reader = new FileReader();
 	reader.readAsText(file, 'UTF-8');
 	reader.onload = function(event) {
 		var result = event.target.result;
-    	var fileName = document.getElementById('pl_file').files[0].name; 
+    	var fileName = file.name; 
     	$.post(playlist.model.upload_server, { data: result, name: fileName }, function(data) {
     		data = JSON.parse(data);
     		if (data.status == "ok" && data.pl_date) this.get(data.pl_date);
@@ -154,5 +178,14 @@ playlist.view = {
    		}
    		}
    		return day+day_suffix+' '+month+' '+moment(pl_date, "YYYY-MM-DD").get('year');
+   },
+   dragoverMain : function(e) {
+   	console.log($(e.target));
+   	if (!$('.pl-dragover').length) $('body').append('<div class="pl-dragover"></div>');
+   },
+   dropMain : function(e) {
+   		$('.pl-dragover').remove();
+   		//var file = e.dataTransfer.files[0];
+   		//this.upload(file);
    }
 };

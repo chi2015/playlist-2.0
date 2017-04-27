@@ -12,6 +12,22 @@ html, body {
 	
 }
 
+.pl-dragover {
+	background-color: rgba(85,85,85,0.5);
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	font-size: 30px;
+	padding-top: 50px;
+	color: #dddddd;
+}
+
+.pl-dragover:before {
+	content: "Drop playlist file to upload";
+}
+
 .header-title {
 	color: #bbbbbb;
 	font-size: 24px;
