@@ -10,17 +10,24 @@ playlist.view = {
    	   playlist.model.current(this.renderPlaylist.bind(this));
    	   $('#pl_date').pl_calendar({
    	   	$button : $('.pl-calendar'),
-   	   	yearRange : [2005,2017],
+   	   	yearRange : [2007,2017],
    	   	setDate : function(date) {
    	   		this.get(date);
    	   	}.bind(this),
    	   	is_mobile : $(window).width() < 800
    	   }); 
    	   $('#pl_file').on('change', this.changefile.bind(this));
-   	   this.counter = 0;
+   	   
+   	   var year_str = '';
+   	   for (var y=2007; y<=playlist.model.top100year; y++)
+   	   	year_str+= '<option value="'+y+'">'+y+'</option>';
+   	   	$('#pl_year').html(year_str);
+   	   	$('#pl_year').val(playlist.model.top100year);
+   	   	$('#pl_year').on('change', this.changeYear.bind(this));
+   	   	
+   	   
    	   window.addEventListener("dragover", function(e) {
     e.preventDefault();
-    this.counter++;
     this.dragoverMain(e);
 }.bind(this));
 window.addEventListener("mouseout", function(e) {
@@ -41,7 +48,30 @@ window.addEventListener("drop", function(e) {
    renderLeftMenu : function() {
    
    },
+   renderTop100 : function(data) {
+   		this.mode = "top100";
+   		$('#pl_date').hide();
+        $('.pl-calendar').hide();
+        $('#pl_year').show();
+        $('#pl_year').val(data.year);
+        var top100_str = '', i=1;
+        this.$pl_content.removeClass("pl-loading");
+        this.$pl_content.empty();
+        data.list.forEach(function(item) {
+     	top100_str+='<div class="list-item">'+
+     	            '<div class="item-info top100">'+i+'</div>'+
+     	            '<div class="item-main"><div class="artist">'+item.artist+'</div><div class="song">'+item.title+'</div></div>'+
+     	            '<div class="item-info total">'+item.total+'</div>'+
+     	            '</div>';
+     	            i++;
+     });
+     this.$pl_content.append(top100_str);
+   },
    renderPlaylist : function(data) {
+     this.mode = "main";
+     $('#pl_year').hide();
+     $('.pl-calendar').show();
+     $('#pl_date').show();
      if (playlist.model.latest_date === data.date) $('#pl_next').hide();
      else $('#pl_next').show();
      $('#pl_date').val(this.formatDate(data.date));
@@ -65,6 +95,7 @@ window.addEventListener("drop", function(e) {
                         +clist_str);
      
    },
+   mode : "main",
    get : function(pl_date) {
    	this.$pl_content.empty();
    	this.$pl_content.addClass("pl-loading");
@@ -83,12 +114,19 @@ window.addEventListener("drop", function(e) {
    next : function() {
    	   this.$pl_content.empty();
    	   this.$pl_content.addClass("pl-loading");
-   	   playlist.model.next(playlist.model.actual_date, this.renderPlaylist.bind(this));
+   	   switch (this.mode) {
+   	   	case "main": playlist.model.next(playlist.model.actual_date, this.renderPlaylist.bind(this)); break;
+   	   	case "top100": playlist.model.top100year++; this.top100(); break;
+   	   }
+   	   
    },
    prev : function() {
        this.$pl_content.empty();
        this.$pl_content.addClass("pl-loading");
-       playlist.model.prev(playlist.model.actual_date, this.renderPlaylist.bind(this));
+       switch (this.mode) {
+   	   	case "main": playlist.model.prev(playlist.model.actual_date, this.renderPlaylist.bind(this)); break;
+   	   	case "top100": playlist.model.top100year--; this.top100(); break;
+   	   }
    },
    openfile : function() {
    	$('#pl_file').click();
@@ -108,6 +146,11 @@ window.addEventListener("drop", function(e) {
     		if (data.status == "ok" && data.pl_date) this.get(data.pl_date);
     	}.bind(this));
 	}.bind(this);
+   },
+   top100 : function() {
+   	 this.$pl_content.empty();
+   	 this.$pl_content.addClass("pl-loading");
+   	 playlist.model.top100(this.renderTop100.bind(this));
    },
    getItemInfoClass : function(change) {
 		switch (change) {
@@ -187,5 +230,12 @@ window.addEventListener("drop", function(e) {
    		$('.pl-dragover').remove();
    		var file = e.dataTransfer.files[0];
    		this.upload(file);
+   },
+   changeYear : function() {
+   		var year = $('#pl_year').val();
+   		if (this.mode=="top100") {
+   		playlist.model.top100year = year;
+   		this.top100();
+   		}
    }
 };

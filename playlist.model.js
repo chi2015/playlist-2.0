@@ -14,6 +14,7 @@ playlist.model = {
 	actual_date : moment().format('YYYY-MM-DD'),
 	latest_date : false,
 	current_date : moment().format('YYYY-MM-DD'),
+	top100year : +moment().format('YYYY') - 1,
 	storage : {},
 	get : function(pl_date, cb) {
 		if (this.storage[pl_date]) {
@@ -76,6 +77,11 @@ playlist.model = {
 		  if (data.list) this.storage[data.date] = data.list;
 		  cb(data);
 		}.bind(this));
+	},
+	top100 : function(cb) {
+		this.remote("top100", {year : this.top100year }, function(data) {
+			cb(data);
+		});
 	},
 	prev_date : function(date) {
 	   return moment(date, "YYYY-MM-DD").subtract(7, "days").format("YYYY-MM-DD");

@@ -257,7 +257,7 @@ html, body {
 	display: flex;
 }
 
-input#pl_date {
+input#pl_date, select#pl_year {
 	background-color: #313131;
 	color: #bbbbbb;
 	border: 0;
@@ -265,7 +265,7 @@ input#pl_date {
 }
 
 @media screen and (max-width: 800px) and (orientation: landscape) {
-	input#pl_date {
+	input#pl_date, select#pl_year {
 		width: 36vw;
 		height: 9vw;
 		font-size: 5vw;
@@ -274,7 +274,7 @@ input#pl_date {
 }
 
 @media screen and (max-width: 800px) and (orientation: portrait) {
-	input#pl_date {
+	input#pl_date, select#pl_year {
 		width: 30vh;
 		height: 9vh;
 		font-size: 4.4vh;
@@ -287,7 +287,7 @@ input#pl_date {
 		max-width: 800px;
 	}
 	
-	input#pl_date {
+	input#pl_date, select#pl_year {
 		width: 270px;
 		height: 50px;
 		font-size: 26px;
@@ -345,6 +345,19 @@ input#pl_date {
 
 .item-info.pl-down:before {
 	content : '\21E9';
+}
+
+.item-info.top100 {
+	font-size: 21px;
+	color: #cccccc;
+	font-weight: bold;
+}
+
+.item-info.total {
+	font-size: 16px;
+	width: 90px;
+	color: #cccccc;
+	font-weight: normal;
 }
 
 .item-main {

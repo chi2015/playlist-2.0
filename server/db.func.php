@@ -205,4 +205,50 @@
 	mysql_close($link);	
 	return true;
 }
+
+function pl_top100($year) {
+	global $host, $user, $pass, $dbname;
+
+        $link = mysql_connect($host, $user, $pass)
+        or die("Could not connect : " . mysql_error());
+        mysql_select_db($dbname) or die("Could not select database");
+	
+	$year = intval($year);
+	$query_select_100 = "SELECT songs.artist AS artist, songs.title AS title, SUM( playlist.score ) + (
+SELECT bonus
+FROM bonuses
+WHERE max_date < date_add( MAX( playlist.pl_date ) , INTERVAL 6
+DAY )
+ORDER BY max_date DESC
+LIMIT 1 ) AS total,
+MAX(playlist.score) AS max_score
+FROM songs
+INNER JOIN playlist ON playlist.song_id = songs.id
+WHERE playlist.pl_date
+BETWEEN '$year-01-01'
+AND '$year-12-31'
+GROUP BY songs.id
+ORDER BY total DESC , artist ASC
+LIMIT 100";
+	$res_sel_100 = mysql_query($query_select_100);
+	if (!$res_sel_100)
+	{
+			echo "Select query failed: ".mysql_error();
+			return false;
+	}
+	
+	$line_dates;
+
+	$top100_arr = array();
+	
+	while ($line_100 = mysql_fetch_assoc($res_sel_100))
+	{
+		$top100_arr[] = array('artist' => $line_100["artist"], 
+							  'title' => $line_100["title"],
+		                      'total' => $line_100["total"],
+		                      'max_score' => $line_100["max_score"]);
+	}
+	mysql_close($link);
+	return array('year' => $year, 'list' => $top100_arr);
+}
 ?>
