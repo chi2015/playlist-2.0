@@ -185,7 +185,7 @@ window.addEventListener("drop", function(e) {
    },
    dropMain : function(e) {
    		$('.pl-dragover').remove();
-   		//var file = e.dataTransfer.files[0];
-   		//this.upload(file);
+   		var file = e.dataTransfer.files[0];
+   		this.upload(file);
    }
 };
