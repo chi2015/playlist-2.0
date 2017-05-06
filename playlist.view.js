@@ -67,6 +67,26 @@ window.addEventListener("drop", function(e) {
      });
      this.$pl_content.append(top100_str);
    },
+   renderTop10Artists : function(data) {
+   	this.mode = "top10artists";
+   	$('#pl_date').hide();
+        $('.pl-calendar').hide();
+        $('#pl_year').show();
+        $('#pl_year').val(data.year);
+        var top10_str = '', i=1;
+        this.$pl_content.removeClass("pl-loading");
+        this.$pl_content.empty();
+        data.list.forEach(function(item) {
+     	top10_str+='<div class="list-item">'+
+     	            '<div class="item-info top100">'+i+'</div>'+
+     	            '<div class="item-main"><div class="artist">'+item.artist+'</div></div>'+
+     	            '<div class="item-info total">'+item.artist_total+'</div>'+
+     	            '<div class="item-info top100">'+item.songs+'</div>'+
+     	            '</div>';
+     	            i++;
+     });
+     this.$pl_content.append(top10_str);
+   },
    renderPlaylist : function(data) {
      this.mode = "main";
      $('#pl_year').hide();
@@ -117,6 +137,7 @@ window.addEventListener("drop", function(e) {
    	   switch (this.mode) {
    	   	case "main": playlist.model.next(playlist.model.actual_date, this.renderPlaylist.bind(this)); break;
    	   	case "top100": playlist.model.top100year++; this.top100(); break;
+   	   	case "top10artists": playlist.model.top100year++; this.top10artists(); break;
    	   }
    	   
    },
@@ -126,6 +147,7 @@ window.addEventListener("drop", function(e) {
        switch (this.mode) {
    	   	case "main": playlist.model.prev(playlist.model.actual_date, this.renderPlaylist.bind(this)); break;
    	   	case "top100": playlist.model.top100year--; this.top100(); break;
+   	   	case "top10artists": playlist.model.top100year--; this.top10artists(); break;
    	   }
    },
    openfile : function() {
@@ -151,6 +173,11 @@ window.addEventListener("drop", function(e) {
    	 this.$pl_content.empty();
    	 this.$pl_content.addClass("pl-loading");
    	 playlist.model.top100(this.renderTop100.bind(this));
+   },
+   top10artists : function() {
+   	 this.$pl_content.empty();
+   	 this.$pl_content.addClass("pl-loading");
+   	 playlist.model.top10artists(this.renderTop10Artists.bind(this));
    },
    getItemInfoClass : function(change) {
 		switch (change) {
@@ -236,6 +263,10 @@ window.addEventListener("drop", function(e) {
    		if (this.mode=="top100") {
    		playlist.model.top100year = year;
    		this.top100();
+   		}
+   		if (this.mode == "top10artists") {
+   		playlist.model.top100year = year;
+   		this.top10artists();
    		}
    }
 };

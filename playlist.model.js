@@ -83,6 +83,11 @@ playlist.model = {
 			cb(data);
 		});
 	},
+	top10artists : function(cb) {
+		this.remote("top10artists", {year : this.top100year }, function(data) {
+			cb(data);
+		});
+	},
 	prev_date : function(date) {
 	   return moment(date, "YYYY-MM-DD").subtract(7, "days").format("YYYY-MM-DD");
 	},

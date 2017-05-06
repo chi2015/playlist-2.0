@@ -13,6 +13,7 @@
     		case 'prev': return isset($_POST['pl_date']) ? pl_next($_POST['pl_date'], true) : []; break;
     		case 'next': return isset($_POST['pl_date']) ? pl_next($_POST['pl_date']) : []; break;
     		case 'top100': return isset($_POST['year']) ? pl_top100($_POST['year']) : []; break;
+    		case 'top10artists': return isset($_POST['year']) ? pl_top10artists($_POST['year']) : []; break;
     		default: return [];
     	}
     	return [];

@@ -251,4 +251,45 @@ LIMIT 100";
 	mysql_close($link);
 	return array('year' => $year, 'list' => $top100_arr);
 }
+
+function pl_top10artists($year) {
+    
+    global $host, $user, $pass, $dbname;
+
+        $link = mysql_connect($host, $user, $pass)
+        or die("Could not connect : " . mysql_error());
+        mysql_select_db($dbname) or die("Could not select database");
+	
+	$year = intval($year);
+    
+    $query_select_10 = "SELECT artist, SUM(total) AS artist_total, COUNT(title) AS songs FROM (SELECT songs.artist AS artist, songs.title AS title, SUM( playlist.score ) + (
+SELECT bonus
+FROM bonuses
+WHERE max_date < date_add( MAX( playlist.pl_date ) , INTERVAL 6
+DAY )
+ORDER BY max_date DESC
+LIMIT 1 ) AS total
+FROM songs
+INNER JOIN playlist ON playlist.song_id = songs.id
+WHERE playlist.pl_date
+BETWEEN '$year-01-01'
+AND '$year-12-31'
+GROUP BY songs.id
+ORDER BY total DESC , artist ASC
+) top100 GROUP BY top100.artist ORDER BY artist_total DESC LIMIT 10
+";
+	$res_sel_10 = mysql_query($query_select_10);
+	if (!$res_sel_10)
+	{
+			echo "Select query failed: ".mysql_error();
+			return false;
+	}
+
+	$top10_arr = [];
+		while ($line_10 = mysql_fetch_assoc($res_sel_10))
+			$top10_arr[] = $line_10;
+	mysql_close($link);
+    return array('year' => $year, 'list' => $top10_arr);
+
+}
 ?>
