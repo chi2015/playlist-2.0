@@ -113,10 +113,24 @@ html, body {
 	}
 }
 
-@media screen and (max-width: 800px) {
+@media screen and (max-width: 800px) and (orientation: landscape) {
 
-	.main-menu:before {
-		content: "\2630";
+	.main-menu {
+		background-size: 7vw 7vw;
+		background-position: 1vw 1vw;
+		background-repeat: no-repeat;
+		background-image: url('menu.png');
+	}
+	
+}
+
+@media screen and (max-width: 800px) and (orientation: portrait) {
+
+	.main-menu {
+		background-size: 7vh 7vh;
+		background-position: 1vh 1vh;
+		background-repeat: no-repeat;
+		background-image: url('menu.png');
 	}
 	
 }
@@ -160,40 +174,70 @@ html, body {
 	visibility: hidden;
 }
 
-.pl-prev:before {
-	content: "\25C0";
+.pl-prev, .pl-next, .pl-up, .pl-down {
+	background-image: url('triangle.png');
 }
 
-.pl-next:before {
-	content: "\25B6";
+.pl-prev {
+	-webkit-transform: rotate(-90deg);
+    -moz-transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+    -o-transform: rotate(-90deg);
+    transform: rotate(-90deg);
 }
 
-.pl-next:before, .pl-prev:before {
-	margin-top: -10px;
+.pl-next {
+	-webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    transform: rotate(90deg);
+}	
+
+.pl-down {
+	-webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    transform: rotate(180deg);
 }
 
-.pl-calendar, .pl-upload {
+.pl-new {
+	background-image: url('star.png');
+}
+
+.pl-calendar, .pl-upload, .pl-new, .pl-up, .pl-down, .pl-prev, .pl-next {
 		background-repeat: no-repeat;
 	}
 
+.pl-new {
+		background-size: 64% auto;
+		background-position: 50% 50%;
+	}
+	
+.pl-up, .pl-down {
+	background-size: 74% auto;
+	background-position: 50% 50%;
+}
+	
 @media screen and (min-width: 800px) {
-	.pl-calendar, .pl-upload {
+	.pl-calendar, .pl-upload, .pl-prev, .pl-next {
 		background-size: 40px 40px;
 		background-position: 5px 5px;
 	}
 }
 
 @media screen and (max-width: 800px) and (orientation: landscape) {
-	.pl-calendar, .pl-upload {
+	.pl-calendar, .pl-upload, .pl-prev, .pl-next {
 		background-size: 7vw 7vw;
 		background-position: 1vw 1vw;
 	}
 }
 
 @media screen and (max-width: 800px) and (orientation: portrait) {
-	.pl-calendar, .pl-upload {
+	.pl-calendar, .pl-upload, .pl-prev, .pl-next {
 		background-size: 7vh 7vh;
-		background-position: 1vh 1vh;
+		background-position: 0.6vh 0.6vh
 	}
 }
 
@@ -324,27 +368,6 @@ input#pl_date, select#pl_year {
 	align-items: center;
 	background-color: #181818;
 	font-size: 36px;
-}
-
-.item-info.pl-new {
-	color: yellow;
-}
-
-.item-info.pl-up, .item-info.pl-down {
-	color: #bbbbbb;
-	font-weight:bold;
-} 
-
-.item-info.pl-new:before {
-	content : '\2605';
-}
-
-.item-info.pl-up:before {
-	content : '\21E7';
-}
-
-.item-info.pl-down:before {
-	content : '\21E9';
 }
 
 .item-info.top100 {
