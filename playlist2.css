@@ -9,6 +9,7 @@ html, body {
 	margin: 0 auto;
 	background-color: #333333;
 	text-align: center;
+	padding-bottom: 10px;
 	
 }
 
@@ -40,9 +41,17 @@ html, body {
 
 .header {
 	width: 100%;
+	position: relative;
+	display: -webkit-box;
+	display: -ms-flexbox;
 	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
+	-webkit-box-orient: horizontal;
+	-webkit-box-direction: normal;
+	    -ms-flex-direction: row;
+	        flex-direction: row;
+	-webkit-box-pack: justify;
+	    -ms-flex-pack: justify;
+	        justify-content: space-between;
 	color: #bbbbbb;
 	font-size: 24px;
 	background-color: #444444;
@@ -101,7 +110,8 @@ html, body {
 	}
 	
 	.left-menu {
-		top: 115px;
+		top: 56px;
+		left: 0;
 	}
 	
 	.lm-item {
@@ -138,7 +148,8 @@ html, body {
 @media screen and (max-width: 800px) and (orientation: landscape) {
 	
 	.left-menu {
-		top: 9.6vw;
+		top: 9.9vw;
+		left: 0;
 	}
 	
 	.lm-item {
@@ -153,7 +164,8 @@ html, body {
 @media screen and (max-width: 800px) and (orientation: portrait) {
 	
 	.left-menu {
-		top: 9.6vh;
+		top: 9.9vh;
+		left: 0;
 	}
 	
 	.lm-item {
@@ -180,25 +192,16 @@ html, body {
 
 .pl-prev {
 	-webkit-transform: rotate(-90deg);
-    -moz-transform: rotate(-90deg);
-    -ms-transform: rotate(-90deg);
-    -o-transform: rotate(-90deg);
     transform: rotate(-90deg);
 }
 
 .pl-next {
 	-webkit-transform: rotate(90deg);
-    -moz-transform: rotate(90deg);
-    -ms-transform: rotate(90deg);
-    -o-transform: rotate(90deg);
     transform: rotate(90deg);
 }	
 
 .pl-down {
 	-webkit-transform: rotate(180deg);
-    -moz-transform: rotate(180deg);
-    -ms-transform: rotate(180deg);
-    -o-transform: rotate(180deg);
     transform: rotate(180deg);
 }
 
@@ -254,9 +257,16 @@ html, body {
 	cursor: pointer;
 	color: #bbbbbb;
 	margin-right: 7px;
+	display: -webkit-box;
+	display: -ms-flexbox;
 	display: flex;
-	flex-direction: column;
-	justify-content:center;
+	-webkit-box-orient: vertical;
+	-webkit-box-direction: normal;
+	    -ms-flex-direction: column;
+	        flex-direction: column;
+	-webkit-box-pack:center;
+	    -ms-flex-pack:center;
+	        justify-content:center;
 }
 
 @media screen and (min-width: 800px) {
@@ -298,6 +308,8 @@ html, body {
 }
 
 .date-block {
+	display: -webkit-box;
+	display: -ms-flexbox;
 	display: flex;
 }
 
@@ -355,17 +367,31 @@ input#pl_date, select#pl_year {
 .list-item {
   width: 100%;
   margin-bottom:5px;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  flex-direction: row;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
 }
 
 .item-info {
     width: 60px;
 	margin: 0 5px;
+	display: -webkit-box;
+	display: -ms-flexbox;
 	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
+	-webkit-box-orient: vertical;
+	-webkit-box-direction: normal;
+	    -ms-flex-direction: column;
+	        flex-direction: column;
+	-webkit-box-pack: center;
+	    -ms-flex-pack: center;
+	        justify-content: center;
+	-webkit-box-align: center;
+	    -ms-flex-align: center;
+	        align-items: center;
 	background-color: #181818;
 	font-size: 36px;
 }
