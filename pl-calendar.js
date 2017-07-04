@@ -18,6 +18,7 @@ $.fn.pl_calendar = function(options) {
     },
 	init : function($el, options) {
 		this.id = this.guid();
+		this.$el = $el;
 		$('body').append('<div class="calendar-main" id="'+this.id+'">'+
   '<div class="calendar-head">'+
     '<div class="month-block">'+
@@ -44,18 +45,7 @@ $.fn.pl_calendar = function(options) {
   '<div class="calendar-days">'+
   '</div></div>');
 		this.$calendar_main = $('.calendar-main#'+this.id);
-		if (options.is_mobile) {
-			this.$calendar_main.width($(window).height() < $(window).width() ? Math.floor($(window).height()/0.75) : $(window).width() );
-			this.$calendar_main.offset({top: 0, left: 0});
-		} else {
-		
-		    this.$calendar_main.width($el.width() >= 400 ? $el.width() : 400);
-		    this.$calendar_main.height(Math.floor(this.$calendar_main.width()*0.75));
-		    this.$calendar_main.offset({top: $el.offset().top + $el.height(), left : $el.offset().left});
-		}
-		this.$calendar_main.css('font-size', Math.floor(this.$calendar_main.width() / 22) + 'px');
 		this.$year = $('.calendar-main#'+this.id+' .calendar-year');
-		this.$year.css('font-size', Math.floor(this.$calendar_main.width() / 22) + 'px');
 		this.$calendar_days = $('.calendar-main#'+this.id+' .calendar-days');
 		this.$month_next = $('.calendar-main#'+this.id+' .month-next');
 		this.$month_prev = $('.calendar-main#'+this.id+' .month-prev');
@@ -162,6 +152,20 @@ $.fn.pl_calendar = function(options) {
 		this.is_active = false;
 	},
 	show : function() {
+		console.log(this.$el.offset());
+		console.log('is_mobile', options.is_mobile);
+		if (options.is_mobile) {
+			this.$calendar_main.width($(window).height() < $(window).width() ? Math.floor($(window).height()/0.75) : $(window).width() );
+			this.$calendar_main.css({top: 0, left: 0});
+		} else {
+		
+		    this.$calendar_main.width(this.$el.width() >= 400 ? this.$el.width() : 400);
+		    this.$calendar_main.height(Math.floor(this.$calendar_main.width()*0.75));
+		    this.$calendar_main.css({top: this.$el.offset().top + this.$el.height(), left : this.$el.offset().left});
+		}
+		this.$calendar_main.css('font-size', Math.floor(this.$calendar_main.width() / 22) + 'px');
+		this.$year.css('font-size', Math.floor(this.$calendar_main.width() / 22) + 'px');
+		console.log(this.$calendar_main.offset());
 		this.$calendar_main.show();
 		this.is_active = true;
 	}	
