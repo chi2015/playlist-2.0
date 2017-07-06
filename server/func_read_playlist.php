@@ -6,16 +6,14 @@ function loadPlaylistFromFile($filename)
       $handle = fopen($filename, "r");
 		if (!$handle)
 		{
-			echo("Error opening file $dataFile");
-           return array();
+           return array("error" => "Error opening file $dataFile");
 		}
 
 		$file_string = fgets($handle);
 
 		if (substr_count($file_string,"Playlist")<=0)
 		{
-			echo("Error file format");
-             return array();
+             return array("error" => "Error file format");
 		}
 
 		$alist = array();
@@ -25,28 +23,27 @@ function loadPlaylistFromFile($filename)
 
 		while (!feof($handle))
 		{
-
-
            $file_string = fgets($handle);
 
 		   if (substr_count($file_string,"Updated")>0)
-		   {		   		$pl_date = getPlaylistDate($file_string);
+		   {		   		$pl_date = getPlaylistDate($file_string);
 		   }
-
+		   else 
            if (substr_count($file_string,"A-List")>0)
-           {           	$alist = getPlaylistBlock($handle, 9);
+           {           	$alist = getPlaylistBlock($handle, 9);
 
            }
-
+           else
            if (substr_count($file_string,"B-List")>0)
            {
            	$blist = getPlaylistBlock($handle, 10);
            }
-
-            if (substr_count($file_string,"C-List")>0)
+           else
+           if (substr_count($file_string,"C-List")>0)
            {
            	$clist = getPlaylistBlock($handle, 6);
            }
+           else return array("error" => "Error file format");
 		}
 
 		$res_playlist = array(
@@ -75,7 +72,7 @@ function getPlaylistBlock(&$handle, $block_size)
 			$is_new[$i] = 0;
 
 			if (substr($file_string, 0, 1) == "*")
-			{				$file_string = str_replace("*","",$file_string);
+			{				$file_string = str_replace("*","",$file_string);
 				$is_new[$i] = 1;
 			}
 

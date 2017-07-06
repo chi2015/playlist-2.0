@@ -14,6 +14,9 @@
   fclose($fp);
   
   $loaded_playlist = loadPlaylistFromFile($dataFile);
+  
+  if (isset($loaded_playlist["error"]) return json_encode(["status" => "error", "error" => $loaded_playlist["error"]]);
+  
   $prepared_playlist = preparePlaylistToInsert($loaded_playlist);
   $pl_date = $loaded_playlist["pl_date"];
   
@@ -21,6 +24,8 @@
   
   $ins_res = insert_playlist($prepared_playlist, $pl_date);
   
-  if ($ins_res) echo json_encode(["status" => "ok", "pl_date" => $pl_date]);
+  if ($ins_res["ok"]) echo json_encode(["status" => "ok", "pl_date" => $pl_date]);
+  else if ($ins_res["error"]) echo json_encode(["status" => "error", "error" => $ins_res["error"]]);
+  else json_encode(["status" => "error", "error" => "Error uploading playlist"]);
     
 ?>

@@ -166,6 +166,8 @@ window.addEventListener("drop", function(e) {
     	$.post(playlist.model.upload_server, { data: result, name: fileName }, function(data) {
     		data = JSON.parse(data);
     		if (data.status == "ok" && data.pl_date) this.get(data.pl_date);
+    		else if (data.status == "error") alert(data.error);
+    		else alert("Error uploading playlist");
     	}.bind(this));
 	}.bind(this);
    },

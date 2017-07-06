@@ -20,7 +20,7 @@
 		$result_pl_songs = mysql_query($query_pl_songs) or
 		die ("Select pl_songs query failed ".mysql_error);
 		
-		$res = ["date" => $pl_date, "list" => []];
+		$res = ["ok" => true, "date" => $pl_date, "list" => []];
 		
 		while ($line_pl_songs = mysql_fetch_assoc($result_pl_songs))
 			array_push($res["list"], $line_pl_songs);
@@ -44,13 +44,14 @@
 	$result_select_date = mysql_query($query_select_date);
 	if (!$result_select_date)
 	{
-		echo "Select query failed: ".mysql_error();
-		return false;
+		$mysql_err = mysql_error();
+		return ["error" => "Select query failed: ".$mysql_err];
 	}
 	
 	if (mysql_num_rows($result_select_date)==0)
 	{
-		return [];
+		mysql_close($link);
+		return ["error" => "Playlist dated $current date does not exist"];
 	}
 
 	$last_date = mysql_fetch_row($result_select_date);
@@ -79,13 +80,13 @@
 	$result_select_date = mysql_query($query_select_date);
 	if (!$result_select_date)
 	{
-		echo "Select query failed: ".mysql_error();
-		return false;
+		$mysql_err = mysql_error();
+		return ["error" => "Select query failed: ".$mysql_err];
 	}
 	
 	if (mysql_num_rows($result_select_date)==0)
 	{
-		return [];
+		return ["error" => "This is the latest playlist"];
 	}
 
 	$last_date = mysql_fetch_row($result_select_date);
@@ -108,9 +109,8 @@
 	$count = mysql_fetch_row($result_check_exist);
 	if ($count[0]>0)
 	{
-		echo "Error: Playlist dated $pl_date is already exists!";
 		mysql_close($link);	
-		return false;
+		return ["error" => "Playlist dated $pl_date is already exists!"];
 	}
 
 	$num_songs = count($songs_array);
@@ -119,17 +119,15 @@
 	{	
 		if (($songs_array[$i]["title"]=="") || ($songs_array[$i]["artist"]==""))
 		{
-			echo "Error: At least one of artists or songs is empty";
 			mysql_close($link);	
-			return false;
+			return ["error" => "Error: At least one of artists or songs is empty"];
 		}
 
 		for ($j=0; $j<$i; $j++)
 			if (($songs_array[$i]["title"]==$songs_array[$j]["title"]) && ($songs_array[$i]["artist"]==$songs_array[$j]["artist"]))
 			{
-				echo "Error: playlist contains 2 or more the same songs!";
 				mysql_close($link);	
-				return false;
+				return ["error" => "playlist contains 2 or more the same songs: ".$songs_array[$i]["artist"]." - ".$songs_array[$i]["title"]];
 			}
 	}
 
@@ -146,9 +144,9 @@
 			$result_select_id = mysql_query($query_select_id);
 		if (!$result_select_id)
 		{
-			echo "Invalid query $query_select_id ".mysql_error()."</p>";
+			$mysql_err = mysql_error();
 			mysql_close($link);	
-			return false;
+			return ["error" => "Invalid query $query_select_id: ".$mysql_err];
 		}
 
 		if (mysql_num_rows($result_select_id)==0)
@@ -157,18 +155,18 @@
 			$result_insert_new_song = mysql_query($query_insert_new_song);
 			if (!$result_insert_new_song)
 			{
-				echo "Invalid query $query_insert_new_song ".mysql_error()."</p>";
+				$mysql_err = mysql_error();
 				mysql_close($link);	
-				return false;
+				return ["error" => "Invalid query $query_insert_new_song ".$mysql_err];
 			}
 
 			mysql_free_result($result_select_id);
 			$result_select_id = mysql_query($query_select_id);
 			if (!$result_select_id)
 			{
-				echo "Invalid query $query_select_id ".mysql_error()."</p>";
+				$mysql_err = mysql_error();
 				mysql_close($link);	
-				return false;
+				return ["error" => "Invalid query $query_select_id ".$mysql_err];
 			}
 
 
@@ -185,9 +183,9 @@
 			$result_update_new_song = mysql_query($query_update_new_song);
 			if (!$query_update_new_song)
 			{
-				echo "Invalid query $query_update_new_song ".mysql_error()."</p>";
+				$mysql_err = mysql_error();
 				mysql_close($link);	
-				return false;
+				return ["error" => "Invalid query $query_update_new_song ".$mysql_err];
 			}
 		}
 
@@ -196,14 +194,14 @@
 		$result_insert_pl = mysql_query($query_insert_playlist);
 		if (!$result_insert_pl)
 		{
-			echo "Insert query failed $query_insert_playlist: ".mysql_error();
+			$mysql_err = mysql_error();
 			mysql_close($link);	
-			return false;
+			return ["error" => "Insert query failed $query_insert_playlist: ".$mysql_err];
 		}
 	}
 
 	mysql_close($link);	
-	return true;
+	return ["ok" => true];
 }
 
 function pl_top100($year) {
@@ -233,8 +231,15 @@ LIMIT 100";
 	$res_sel_100 = mysql_query($query_select_100);
 	if (!$res_sel_100)
 	{
-			echo "Select query failed: ".mysql_error();
-			return false;
+			$mysql_err = mysql_error();
+			mysql_close($link);
+			return ["error" => "Select query failed: ".$mysql_err];
+	}
+	
+	if (mysql_num_rows($res_sel_100)==0)
+	{
+		mysql_close($link);
+		return ["error" => "This is the latest top 100"];
 	}
 	
 	$line_dates;
@@ -249,7 +254,7 @@ LIMIT 100";
 		                      'max_score' => $line_100["max_score"]);
 	}
 	mysql_close($link);
-	return array('year' => $year, 'list' => $top100_arr);
+	return array('ok' => true, 'year' => $year, 'list' => $top100_arr);
 }
 
 function pl_top10artists($year) {
@@ -281,15 +286,22 @@ ORDER BY total DESC , artist ASC
 	$res_sel_10 = mysql_query($query_select_10);
 	if (!$res_sel_10)
 	{
-			echo "Select query failed: ".mysql_error();
-			return false;
+			$mysql_err = mysql_error();
+			mysql_close($link);
+			return ["error" => "Select query failed: ".$mysql_err];
+	}
+	
+	if (mysql_num_rows($res_sel_10)==0)
+	{
+		mysql_close($link);
+		return ["error" => "This is the latest top 10 artists"];
 	}
 
 	$top10_arr = [];
 		while ($line_10 = mysql_fetch_assoc($res_sel_10))
 			$top10_arr[] = $line_10;
 	mysql_close($link);
-    return array('year' => $year, 'list' => $top10_arr);
+    return array('ok' => true, 'year' => $year, 'list' => $top10_arr);
 
 }
 ?>
