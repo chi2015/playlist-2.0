@@ -166,8 +166,8 @@ window.addEventListener("drop", function(e) {
     	$.post(playlist.model.upload_server, { data: result, name: fileName }, function(data) {
     		data = JSON.parse(data);
     		if (data.status == "ok" && data.pl_date) this.get(data.pl_date);
-    		else if (data.status == "error") alert(data.error);
-    		else alert("Error uploading playlist");
+    		else if (data.status == "error") this.showError(data.error);
+    		else this.showError("Error uploading playlist");
     	}.bind(this));
 	}.bind(this);
    },
@@ -270,5 +270,8 @@ window.addEventListener("drop", function(e) {
    		playlist.model.top100year = year;
    		this.top10artists();
    		}
+   },
+   showError : function(error_text) {
+   		alert(error_text);
    }
 };

@@ -15,7 +15,7 @@
   
   $loaded_playlist = loadPlaylistFromFile($dataFile);
   
-  if (isset($loaded_playlist["error"]) return json_encode(["status" => "error", "error" => $loaded_playlist["error"]]);
+  if (isset($loaded_playlist["error"])) return json_encode(["status" => "error", "error" => $loaded_playlist["error"]]);
   
   $prepared_playlist = preparePlaylistToInsert($loaded_playlist);
   $pl_date = $loaded_playlist["pl_date"];
