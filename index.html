@@ -3,6 +3,7 @@
     	<title>Playlist 2</title>
     	<link rel="stylesheet" type="text/css" href="playlist2.css?r=280620171729" />
     	<link rel="stylesheet" type="text/css" href="pl-calendar.css?r=040720171936" />
+    	<link rel="stylesheet" type="text/css" href="pl-dialog.css?r=100720171901" />
     	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     	<link rel="icon" href="pl-favicon.png" type="image/png"/>
     </head>
@@ -18,6 +19,7 @@
 				<div class="lm-item" onclick="playlist.view.openfile()">Add</div>
 				<div class="lm-item" onclick="playlist.view.top100()">Top 100</div>
 				<div class="lm-item" onclick="playlist.view.top10artists()">Top 10 Artists</div>
+				<div class="lm-item delete-menu-item" onclick="playlist.view.show_delete_dialog()">Delete</div>
 			</div>
 			<div class="date-block">
 				<div class="pl-prev" onclick="playlist.view.prev()"></div>
@@ -34,13 +36,24 @@
 	     </div>
 	     <div id="playlist-content" class="list"></div>
 	    </div>
+	    <div class="dialog">
+  			<span class="dialog__close">&#x2715;</span>
+  			<h2 class="dialog__title">Delete playlist</h2>
+ 			<div class="dialog-password-block">
+ 				<span class="dialog-password-title">Enter password to delete:</span>
+ 				<input class="dialog-password-input" type="password" name="delpassword"/>
+ 			</div>
+  			<button class="dialog__action">Delete &#8594;</button>
+		</div>
+		<div style="display:none;" class="dialog__trigger"></div>
 	    <input type="file" id="pl_file" style="display:none;"/>
 	    <script type="text/javascript" src="jquery.min.3.1.1.js"></script>
+	    <script type="text/javascript" src="pl-dialog.js?r=100720171857"></script>
 	    <script type="text/javascript" src="moment.min.2.18.1.js"></script>
 	    <script type="text/javascript" src="pl-calendar.js?r=040720171937"></script>
 	    <script type="text/javascript" src="playlist.main.js?r=2"></script>
 	    <script type="text/javascript" src="playlist.model.js?r=100720171500"></script>
-	    <script type="text/javascript" src="playlist.view.js?r=100720171512"></script>
+	    <script type="text/javascript" src="playlist.view.js?r=100720171903"></script>
 	    <script type="text/javascript" src="main.js?r=2"></script>	
 	</body>
 </html>

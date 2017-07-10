@@ -16,6 +16,8 @@ playlist.view = {
    	   	}.bind(this),
    	   	is_mobile : $(window).width() < 800
    	   }); 
+   	   this.$delete_dialog = $('.dialog');
+   	   $(dialog);
    	   $('#pl_file').on('change', this.changefile.bind(this));
    	   
    	   var year_str = '';
@@ -118,6 +120,11 @@ window.addEventListener("drop", function(e) {
                         +clist_str);
      
    },
+   $delete_dialog : null,
+   show_delete_dialog : function() {
+   	$('.dialog__title').html('Delete playlist. Date: '+this.formatDate(playlist.model.actual_date));
+   	$('.dialog__trigger').click();
+   },
    mode : "main",
    get : function(pl_date) {
    	this.$pl_content.empty();
@@ -155,6 +162,9 @@ window.addEventListener("drop", function(e) {
    },
    archive : function() {
    	$('.pl-calendar').click();
+   },
+   delete_playlist : function() {
+   
    },
    openfile : function() {
    	$('#pl_file').click();
