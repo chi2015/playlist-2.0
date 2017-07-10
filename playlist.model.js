@@ -15,7 +15,10 @@ playlist.model = {
 	latest_date : false,
 	current_date : moment().format('YYYY-MM-DD'),
 	top100year : +moment().format('YYYY') - 1,
+	current_year : +moment().format('YYYY') - 1,
 	storage : {},
+	top100_storage : {},
+	top10_storage : {},
 	get : function(pl_date, cb) {
 		if (this.storage[pl_date]) {
 		 this.actual_date = pl_date;
@@ -79,14 +82,26 @@ playlist.model = {
 		}.bind(this));
 	},
 	top100 : function(cb) {
-		this.remote("top100", {year : this.top100year }, function(data) {
+		if (this.top100_storage[this.top100year]) {
+			this.current_year = this.top100year;
+			cb({year : this.top100year, list : this.top100_storage[this.top100year]});
+		}
+		else this.remote("top100", {year : this.top100year }, function(data) {
+			if (data.year) this.current_year = this.top100year; else this.top100year = this.current_year;
+			if (data.list) this.top100_storage[this.top100year] = data.list;
 			cb(data);
-		});
+		}.bind(this));
 	},
 	top10artists : function(cb) {
-		this.remote("top10artists", {year : this.top100year }, function(data) {
+		if (this.top10_storage[this.top100year]) {
+			this.current_year = this.top100year;
+			cb({year : this.top100year, list : this.top10_storage[this.top100year]});
+		}
+		else this.remote("top10artists", {year : this.top100year }, function(data) {
+			if (data.year) this.current_year = this.top100year; else this.top100year = this.current_year;
+			if (data.list) this.top10_storage[this.top100year] = data.list;
 			cb(data);
-		});
+		}.bind(this));
 	},
 	prev_date : function(date) {
 	   return moment(date, "YYYY-MM-DD").subtract(7, "days").format("YYYY-MM-DD");

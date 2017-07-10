@@ -49,15 +49,16 @@ window.addEventListener("drop", function(e) {
    
    },
    renderTop100 : function(data) {
+   		if (data.error) this.showError(data.error);
    		this.mode = "top100";
    		$('#pl_date').hide();
         $('.pl-calendar').hide();
         $('#pl_year').show();
-        $('#pl_year').val(data.year);
+        $('#pl_year').val(playlist.model.current_year);
         var top100_str = '', i=1;
         this.$pl_content.removeClass("pl-loading");
         this.$pl_content.empty();
-        data.list.forEach(function(item) {
+        playlist.model.top100_storage[playlist.model.current_year].forEach(function(item) {
      	top100_str+='<div class="list-item">'+
      	            '<div class="item-info top100">'+i+'</div>'+
      	            '<div class="item-main"><div class="artist">'+item.artist+'</div><div class="song">'+item.title+'</div></div>'+
@@ -68,15 +69,16 @@ window.addEventListener("drop", function(e) {
      this.$pl_content.append(top100_str);
    },
    renderTop10Artists : function(data) {
+   	if (data.error) this.showError(data.error);
    	this.mode = "top10artists";
    	$('#pl_date').hide();
         $('.pl-calendar').hide();
         $('#pl_year').show();
-        $('#pl_year').val(data.year);
+        $('#pl_year').val(playlist.model.current_year);
         var top10_str = '', i=1;
         this.$pl_content.removeClass("pl-loading");
         this.$pl_content.empty();
-        data.list.forEach(function(item) {
+        playlist.model.top10_storage[playlist.model.current_year].forEach(function(item) {
      	top10_str+='<div class="list-item">'+
      	            '<div class="item-info top100">'+i+'</div>'+
      	            '<div class="item-main"><div class="artist">'+item.artist+'</div></div>'+
@@ -88,17 +90,18 @@ window.addEventListener("drop", function(e) {
      this.$pl_content.append(top10_str);
    },
    renderPlaylist : function(data) {
+     if (data.error) this.showError(data.error);
      this.mode = "main";
      $('#pl_year').hide();
      $('.pl-calendar').show();
      $('#pl_date').show();
-     if (playlist.model.latest_date === data.date) $('#pl_next').hide();
+     if (playlist.model.latest_date === playlist.model.actual_date) $('#pl_next').hide();
      else $('#pl_next').show();
-     $('#pl_date').val(this.formatDate(data.date));
+     $('#pl_date').val(this.formatDate(playlist.model.actual_date));
      var alist_str = '', blist_str = '', clist_str = '';
      this.$pl_content.removeClass("pl-loading");
      this.$pl_content.empty();
-     data.list.forEach(function(item) {
+     playlist.model.storage[playlist.model.actual_date].forEach(function(item) {
      	var item_change = playlist.model.getItemChange(item);
      	var item_str = '<div class="list-item">'+'<div class="item-info'+(playlist.view.getItemInfoClass(item_change))+'"></div>'+
      	'<div class="item-main"><div class="artist">'+item.artist+'</div><div class="song">'+item.title+'</div></div></div>';

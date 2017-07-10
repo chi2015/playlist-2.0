@@ -86,7 +86,7 @@
 	
 	if (mysql_num_rows($result_select_date)==0)
 	{
-		return ["error" => "This is the latest playlist"];
+		return ["error" => "This is the ".($is_prev ? "oldest" : "latest")." playlist"];
 	}
 
 	$last_date = mysql_fetch_row($result_select_date);
@@ -239,7 +239,7 @@ LIMIT 100";
 	if (mysql_num_rows($res_sel_100)==0)
 	{
 		mysql_close($link);
-		return ["error" => "This is the latest top 100"];
+		return ["error" => "No data for top 100 that year"];
 	}
 	
 	$line_dates;
@@ -294,7 +294,7 @@ ORDER BY total DESC , artist ASC
 	if (mysql_num_rows($res_sel_10)==0)
 	{
 		mysql_close($link);
-		return ["error" => "This is the latest top 10 artists"];
+		return ["error" => "No data for top 10 that year"];
 	}
 
 	$top10_arr = [];
