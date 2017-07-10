@@ -2,7 +2,7 @@
   background: #f1f1f1;
   width: 70%;
   position: absolute;
-  left: calc(50% - 35%);
+  left: 12%;
   top: 0;
   padding: 30px;
   box-shadow: 0 10px 30px rgba(51, 51, 51, 0.4);
@@ -23,8 +23,8 @@
 }
  
 .dialog .dialog__close {
-  font-size: 2rem;
-  line-height: 2rem;
+  font-size: 1rem;
+  line-height: 1rem;
   position: absolute;
   right: 5px;
   top: 5px;
@@ -37,7 +37,7 @@
 .dialog .dialog__close:hover { color: #E74C3C; }
  
 .dialog .dialog__title {
-  font-size: 2rem;
+  font-size: 1rem;
   font-weight: 100;
   margin: 0;
   padding: 0 25px 15px 0;
@@ -58,11 +58,15 @@
 	margin: 10px 0;
 }
 
+.dialog .dialog-password-input {
+	margin: 5px;
+}
+
 @media (max-width: 800px) {
  
 .dialog {
-  width: 90%;
-  left: calc(50% - 45%);
+  width: 80%;
+  left: 4%;
 } 
 }
 
