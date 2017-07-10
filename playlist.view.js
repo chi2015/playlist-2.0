@@ -153,6 +153,9 @@ window.addEventListener("drop", function(e) {
    	   	case "top10artists": playlist.model.top100year--; this.top10artists(); break;
    	   }
    },
+   archive : function() {
+   	$('.pl-calendar').click();
+   },
    openfile : function() {
    	$('#pl_file').click();
    },
