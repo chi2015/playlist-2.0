@@ -8,10 +8,12 @@ $host = "localhost";
 $dbname = "vh272659_playlist";
 
 $user = "vh272659_dbuser";
-$pass = "SV8VvYmfsnboQEE";
+$pass = "********";
 
 $alist_score = 47;
 $blist_score = 28;
 $clist_score = 23;
+
+$delete_pass = "********";
 
 ?>

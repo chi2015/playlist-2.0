@@ -103,6 +103,12 @@ playlist.model = {
 			cb(data);
 		}.bind(this));
 	},
+	delete_playlist : function(pl_date, password, cb) {
+		this.remote("delete", { pl_date : pl_date, password : password }, function(data) {
+			if (data.ok && this.storage[pl_date]) delete this.storage[pl_date];
+			cb(data);
+		}.bind(this));
+	},
 	prev_date : function(date) {
 	   return moment(date, "YYYY-MM-DD").subtract(7, "days").format("YYYY-MM-DD");
 	},

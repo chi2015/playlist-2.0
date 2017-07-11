@@ -123,6 +123,9 @@ window.addEventListener("drop", function(e) {
    $delete_dialog : null,
    show_delete_dialog : function() {
    	$('.dialog__title').html('Delete playlist. Date: '+this.formatDate(playlist.model.actual_date));
+   	$('.dialog__action').on('click', function() {
+   		this.delete_playlist(playlist.model.actual_date, $('.dialog-password-input').val());
+   	}.bind(this));
    	$('.dialog__trigger').click();
    },
    mode : "main",
@@ -163,8 +166,16 @@ window.addEventListener("drop", function(e) {
    archive : function() {
    	$('.pl-calendar').click();
    },
-   delete_playlist : function() {
-   
+   delete_playlist : function(pl_date, password) {
+   		playlist.model.delete_playlist(pl_date, password, function(data) {
+   			if (data.error) this.showError(data.error);
+   			else if (data.ok) {
+   				this.showError("Playlist successfully deleted");
+   				$('.dialog__close').click();
+   				this.latest();
+   			}
+   			else this.showError("Error deleting playlist"); 
+   		}.bind(this));
    },
    openfile : function() {
    	$('#pl_file').click();

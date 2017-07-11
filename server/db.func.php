@@ -3,7 +3,7 @@
     
     function pl_get($pl_date) {
         
-        if (!preg_match('/^[0-9]{4}-[0-1]{1}[0-9]{1}-[0-3]{1}[0-9]{1}$/', $pl_date)) return [];
+        if (!preg_match('/^[0-9]{4}-[0-1]{1}[0-9]{1}-[0-3]{1}[0-9]{1}$/', $pl_date)) return ['error' => 'Wrong playlist date format'];
 
         global $host, $user, $pass, $dbname;
 
@@ -29,6 +29,9 @@
     }
     
     function pl_last($current_date = "", $latest = true) {
+       if ($current_date!=="" && !preg_match('/^[0-9]{4}-[0-1]{1}[0-9]{1}-[0-3]{1}[0-9]{1}$/', $current_date)) 
+       	return ['error' => 'Wrong playlist date format'];
+       
        global $host, $user, $pass, $dbname;
 
         $link = mysql_connect($host, $user, $pass)
@@ -61,7 +64,7 @@
     }
     
     function pl_next($pl_date, $is_prev = false) {
-       if (!preg_match('/^[0-9]{4}-[0-1]{1}[0-9]{1}-[0-3]{1}[0-9]{1}$/', $pl_date)) return [];
+       if (!preg_match('/^[0-9]{4}-[0-1]{1}[0-9]{1}-[0-3]{1}[0-9]{1}$/', $pl_date)) return ['error' => 'Wrong playlist date format'];
        
        global $host, $user, $pass, $dbname;
 
@@ -96,7 +99,7 @@
     
     function insert_playlist($songs_array, $pl_date)
 { 
-	if (!preg_match('/^[0-9]{4}-[0-1]{1}[0-9]{1}-[0-3]{1}[0-9]{1}$/', $pl_date)) return [];
+	if (!preg_match('/^[0-9]{4}-[0-1]{1}[0-9]{1}-[0-3]{1}[0-9]{1}$/', $pl_date)) return ['error' => 'Wrong playlist date format'];
 
         global $host, $user, $pass, $dbname;
 
@@ -303,5 +306,38 @@ ORDER BY total DESC , artist ASC
 	mysql_close($link);
     return array('ok' => true, 'year' => $year, 'list' => $top10_arr);
 
+}
+
+function pl_delete($pl_date, $password) {
+	global $delete_pass;
+	if ($delete_pass!==$password) return ['error' => 'Wrong password'];
+	if (!preg_match('/^[0-9]{4}-[0-1]{1}[0-9]{1}-[0-3]{1}[0-9]{1}$/', $pl_date)) return ['error' => 'Wrong playlist date format'];
+
+	 global $host, $user, $pass, $dbname;
+
+	$link = mysql_connect($host, $user, $pass)
+    or die("Could not connect : " . mysql_error());
+    mysql_select_db($dbname) or die("Could not select database");
+
+	$query_delete = "DELETE FROM playlist WHERE pl_date='$pl_date'";
+	$result_delete = mysql_query($query_delete);
+	if (!$result_delete)
+	{
+		$mysql_err = mysql_error();
+		mysql_close($link);
+		return ["error" => "Delete query failed: ".$mysql_err];
+	}
+
+	$query_delete_song = "DELETE FROM songs WHERE id NOT IN (SELECT DISTINCT song_id FROM playlist)";
+
+	$result_delete_song = mysql_query($query_delete_song);
+	if (!$result_delete_song)
+	{
+		$mysql_err = mysql_error();
+		mysql_close($link);
+		return ["error" => "Delete song failed: ".$mysql_err];
+	}
+			
+	return ['ok' => true];
 }
 ?>
