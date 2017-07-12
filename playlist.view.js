@@ -279,7 +279,6 @@ window.addEventListener("drop", function(e) {
    		return day+day_suffix+' '+month+' '+moment(pl_date, "YYYY-MM-DD").get('year');
    },
    dragoverMain : function(e) {
-   	console.log($(e.target));
    	if (!$('.pl-dragover').length) $('body').append('<div class="pl-dragover"></div>');
    },
    dropMain : function(e) {

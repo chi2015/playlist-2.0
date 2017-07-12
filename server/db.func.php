@@ -7,9 +7,14 @@
 
         global $host, $user, $pass, $dbname;
 
-        $link = mysql_connect($host, $user, $pass)
-        or die("Could not connect : " . mysql_error());
-        mysql_select_db($dbname) or die("Could not select database");
+        $link = mysql_connect($host, $user, $pass);
+        if (!$link) return ["error" => "Could not connect : " . mysql_error()];
+        
+        $sel_db = mysql_select_db($dbname);
+        if (!$sel_db) {
+        	mysql_close($link);
+        	return ["error" => "Could not select database"];
+        }
         
         $query_pl_songs = "SELECT songs.id, songs.artist, songs.title, songs.date_appear, playlist.score
 		FROM songs
@@ -17,8 +22,12 @@
 		WHERE playlist.pl_date = '$pl_date'
 		ORDER BY playlist.score DESC , songs.artist ASC";
 
-		$result_pl_songs = mysql_query($query_pl_songs) or
-		die ("Select pl_songs query failed ".mysql_error);
+		$result_pl_songs = mysql_query($query_pl_songs);
+		if (!$result_pl_songs) { 
+			$mysql_err = mysql_error();
+			mysql_close($link);
+			return ["error" => "Select query failed " . $mysql_err];
+		}
 		
 		$res = ["ok" => true, "date" => $pl_date, "list" => []];
 		
@@ -34,9 +43,15 @@
        
        global $host, $user, $pass, $dbname;
 
-        $link = mysql_connect($host, $user, $pass)
-        or die("Could not connect : " . mysql_error());
-        mysql_select_db($dbname) or die("Could not select database");
+        $link = mysql_connect($host, $user, $pass);
+        if (!$link) return ["error" => "Could not connect : " . mysql_error()];
+        
+        $sel_db = mysql_select_db($dbname);
+        if (!$sel_db) {
+        	mysql_close($link);
+        	return ["error" => "Could not select database"];
+        }
+        
     
     $query_select_date = $latest ? "SELECT MAX(pl_date)
 									FROM playlist" :
@@ -68,9 +83,14 @@
        
        global $host, $user, $pass, $dbname;
 
-        $link = mysql_connect($host, $user, $pass)
-        or die("Could not connect : " . mysql_error());
-        mysql_select_db($dbname) or die("Could not select database");
+        $link = mysql_connect($host, $user, $pass);
+        if (!$link) return ["error" => "Could not connect : " . mysql_error()];
+        
+        $sel_db = mysql_select_db($dbname);
+        if (!$sel_db) {
+        	mysql_close($link);
+        	return ["error" => "Could not select database"];
+        }
         
     $less_or_more = $is_prev ? "<" : ">";
     $sort_order = $is_prev ? "DESC" : "ASC";
@@ -103,9 +123,15 @@
 
         global $host, $user, $pass, $dbname;
 
-        $link = mysql_connect($host, $user, $pass)
-        or die("Could not connect : " . mysql_error());
-        mysql_select_db($dbname) or die("Could not select database");
+         $link = mysql_connect($host, $user, $pass);
+        if (!$link) return ["error" => "Could not connect : " . mysql_error()];
+        
+        $sel_db = mysql_select_db($dbname);
+        if (!$sel_db) {
+        	mysql_close($link);
+        	return ["error" => "Could not select database"];
+        }
+        
 	
 	$query_check_exist = "SELECT COUNT(pl_date) FROM playlist WHERE pl_date='$pl_date'";
 	$result_check_exist = mysql_query($query_check_exist);
@@ -123,7 +149,7 @@
 		if (($songs_array[$i]["title"]=="") || ($songs_array[$i]["artist"]==""))
 		{
 			mysql_close($link);	
-			return ["error" => "Error: At least one of artists or songs is empty"];
+			return ["error" => "Error: At least one of artists or songs is empty: ".$songs_array[$i]["artist"]." - ".$songs_array[$i]["title"]];
 		}
 
 		for ($j=0; $j<$i; $j++)
@@ -210,9 +236,15 @@
 function pl_top100($year) {
 	global $host, $user, $pass, $dbname;
 
-        $link = mysql_connect($host, $user, $pass)
-        or die("Could not connect : " . mysql_error());
-        mysql_select_db($dbname) or die("Could not select database");
+        $link = mysql_connect($host, $user, $pass);
+        if (!$link) return ["error" => "Could not connect : " . mysql_error()];
+        
+        $sel_db = mysql_select_db($dbname);
+        if (!$sel_db) {
+        	mysql_close($link);
+        	return ["error" => "Could not select database"];
+        }
+        
 	
 	$year = intval($year);
 	$query_select_100 = "SELECT songs.artist AS artist, songs.title AS title, SUM( playlist.score ) + (
@@ -264,9 +296,15 @@ function pl_top10artists($year) {
     
     global $host, $user, $pass, $dbname;
 
-        $link = mysql_connect($host, $user, $pass)
-        or die("Could not connect : " . mysql_error());
-        mysql_select_db($dbname) or die("Could not select database");
+         $link = mysql_connect($host, $user, $pass);
+        if (!$link) return ["error" => "Could not connect : " . mysql_error()];
+        
+        $sel_db = mysql_select_db($dbname);
+        if (!$sel_db) {
+        	mysql_close($link);
+        	return ["error" => "Could not select database"];
+        }
+        
 	
 	$year = intval($year);
     
@@ -313,12 +351,17 @@ function pl_delete($pl_date, $password) {
 	if ($delete_pass!==$password) return ['error' => 'Wrong password'];
 	if (!preg_match('/^[0-9]{4}-[0-1]{1}[0-9]{1}-[0-3]{1}[0-9]{1}$/', $pl_date)) return ['error' => 'Wrong playlist date format'];
 
-	 global $host, $user, $pass, $dbname;
-
-	$link = mysql_connect($host, $user, $pass)
-    or die("Could not connect : " . mysql_error());
-    mysql_select_db($dbname) or die("Could not select database");
-
+	  global $host, $user, $pass, $dbname;
+	 
+	 $link = mysql_connect($host, $user, $pass);
+        if (!$link) return ["error" => "Could not connect : " . mysql_error()];
+        
+        $sel_db = mysql_select_db($dbname);
+        if (!$sel_db) {
+        	mysql_close($link);
+        	return ["error" => "Could not select database"];
+        }
+        
 	$query_delete = "DELETE FROM playlist WHERE pl_date='$pl_date'";
 	$result_delete = mysql_query($query_delete);
 	if (!$result_delete)

@@ -31,17 +31,20 @@ function loadPlaylistFromFile($filename)
 		   else 
            if (substr_count($file_string,"A-List")>0)
            {           	$alist = getPlaylistBlock($handle, 9);
+           if (isset($alist["error"])) return array("error" => "At least on song in file is incorrect format: ".$alist["error"]);
 
            }
            else
            if (substr_count($file_string,"B-List")>0)
            {
            	$blist = getPlaylistBlock($handle, 10);
+           	if (isset($blist["error"])) return array("error" => "At least on song in file is incorrect format: ".$blist["error"]);
            }
            else
            if (substr_count($file_string,"C-List")>0)
            {
            	$clist = getPlaylistBlock($handle, 6);
+           	if (isset($clist["error"])) return array("error" => "At least on song in file is incorrect format: ".$clist["error"]);
            }
            else return array("error" => "Error file format");
 		}
@@ -78,6 +81,7 @@ function getPlaylistBlock(&$handle, $block_size)
 
 			$file_string = preg_replace("/(.+)(feat\.\s.+)(\s-\s.+)/","\\1\\3 (\\2)",$file_string);
 			$artist_title = explode(" - ",$file_string);
+			if (count($artist_title) < 2) return ["error" => $file_string];
 			$artist[$i] = $artist_title[0];
 			$title[$i] = $artist_title[1];
 			if (substr_count($title[$i],"/")>0 )

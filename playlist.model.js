@@ -2,12 +2,13 @@ playlist.model = {
 	playlist_server : "http://chi2016.ru/playlist2/server/playlist.php",
 	upload_server : "http://chi2016.ru/playlist2/server/upload.php",
 	remote : function(action, params, cb) {
-	    console.log("remote request", action, params);
+	    //console.log("remote request", action, params);
 	    params = params || {};
 	    params.action = action;
 	    $.post(this.playlist_server, params, function(data) {
+	        //console.log(data);
 	        data = JSON.parse(data);
-	        console.log("remote response", data);
+	        //console.log("remote response", data);
 	        cb(data);
 	    });
 	},
