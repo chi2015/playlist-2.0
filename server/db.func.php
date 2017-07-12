@@ -362,6 +362,23 @@ function pl_delete($pl_date, $password) {
         	return ["error" => "Could not select database"];
         }
         
+	$query_select_song_ids = "SELECT song_id, COUNT(1) AS cnt FROM playlist GROUP BY song_id HAVING cnt = 1 AND MAX(pl_date) = '$pl_date'";
+	$res_sel_song_ids = mysql_query($query_select_song_ids);
+	
+	if (!$res_sel_song_ids)
+	{
+			$mysql_err = mysql_error();
+			mysql_close($link);
+			return ["error" => "Select query failed: ".$mysql_err];
+	}
+	
+	$songs_arr_to_delete = [];
+	
+	while ($line_songs_ids = mysql_fetch_assoc($res_sel_song_ids))
+	{
+		$songs_arr_to_delete[] = $line_songs_ids["song_id"];
+	}
+	
 	$query_delete = "DELETE FROM playlist WHERE pl_date='$pl_date'";
 	$result_delete = mysql_query($query_delete);
 	if (!$result_delete)
@@ -371,7 +388,9 @@ function pl_delete($pl_date, $password) {
 		return ["error" => "Delete query failed: ".$mysql_err];
 	}
 
-	$query_delete_song = "DELETE FROM songs WHERE id NOT IN (SELECT DISTINCT song_id FROM playlist)";
+	if (count($songs_arr_to_delete) > 0)
+	{
+	 $query_delete_song = "DELETE FROM songs WHERE id IN (".join(", ", $songs_arr_to_delete).")";
 
 	$result_delete_song = mysql_query($query_delete_song);
 	if (!$result_delete_song)
@@ -380,7 +399,9 @@ function pl_delete($pl_date, $password) {
 		mysql_close($link);
 		return ["error" => "Delete song failed: ".$mysql_err];
 	}
-			
+	}
+	
+	mysql_close($link);		
 	return ['ok' => true];
 }
 ?>
