@@ -110,8 +110,9 @@ body {
 
 @media screen and (min-width: 800px) {
 	.main-menu {
-		width: 225px;
-		font-size: 20px;
+		width: 19vw;
+		max-width: 225px;
+		font-size: 1.6vw;
 	}
 	
 	.main-menu:before {
@@ -124,11 +125,12 @@ body {
 	}
 	
 	.lm-item {
-		width: 225px;
+		max-width: 225px;
+		width: 19vw;
 		height: 50px;
 		margin: 5px 5px 5px 0;
 		line-height: 50px;
-		font-size: 22px;
+		font-size: 1.7vw;
 	}
 }
 
@@ -349,6 +351,7 @@ input#pl_date, select#pl_year {
 
 @media screen and (min-width: 800px) {
 	.list {
+		width: 60vw;
 		max-width: 800px;
 	}
 	
@@ -360,8 +363,13 @@ input#pl_date, select#pl_year {
 	}
 }
 
+@media screen and (max-width: 800px) {
+	.list {
+		width: 100%;
+	}
+}
+
 .list {
-    width: 100%;
     margin: 0 auto;
 }
 
