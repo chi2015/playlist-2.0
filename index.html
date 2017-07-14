@@ -1,7 +1,7 @@
 <html>
     <head>
     	<title>Playlist 2</title>
-    	<link rel="stylesheet" type="text/css" href="playlist2.css?r=140720170138" />
+    	<link rel="stylesheet" type="text/css" href="playlist2.css?r=140720172329" />
     	<link rel="stylesheet" type="text/css" href="pl-calendar.css?r=040720171936" />
     	<link rel="stylesheet" type="text/css" href="pl-dialog.css?r=100720172118" />
     	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -22,11 +22,11 @@
 				<div class="lm-item delete-menu-item" onclick="playlist.view.show_delete_dialog()">Delete</div>
 			</div>
 			<div class="date-block">
-				<div class="pl-prev" onclick="playlist.view.prev()"></div>
+				<div class="pl-prev" onclick="playlist.view.move('left', playlist.view.prev.bind(playlist.view))"></div>
 				<input id="pl_date"></input>
 				<select id="pl_year" style="display:none;"></select>
 				<div class="pl-calendar"></div>
-				<div class="pl-next" onclick="playlist.view.next()"></div>
+				<div class="pl-next" onclick="playlist.view.move('right', playlist.view.next.bind(playlist.view))"></div>
 			</div>
 			<div class="pl-upload" title="Add playlist" onclick="playlist.view.openfile()"></div>
 	       <!-- <button id="pl_current" onclick="playlist.view.current()">Current</button>
@@ -53,7 +53,7 @@
 	    <script type="text/javascript" src="pl-calendar.js?r=040720171937"></script>
 	    <script type="text/javascript" src="playlist.main.js?r=2"></script>
 	    <script type="text/javascript" src="playlist.model.js?r=130720170000"></script>
-	    <script type="text/javascript" src="playlist.view.js?r=130720170000"></script>
+	    <script type="text/javascript" src="playlist.view.js?r=140720172342"></script>
 	    <script type="text/javascript" src="main.js?r=2"></script>	
 	</body>
 </html>

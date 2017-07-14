@@ -145,23 +145,32 @@ window.addEventListener("drop", function(e) {
        playlist.model.latest(this.renderPlaylist.bind(this));
    },
    next : function() {
+   	   this.$pl_content.css({ position: 'relative', top : 0, left : 0}); 
    	   this.$pl_content.empty();
    	   this.$pl_content.addClass("pl-loading");
    	   switch (this.mode) {
-   	   	case "main": playlist.model.next(playlist.model.actual_date, this.renderPlaylist.bind(this)); break;
-   	   	case "top100": playlist.model.top100year++; this.top100(); break;
-   	   	case "top10artists": playlist.model.top100year++; this.top10artists(); break;
+   	   			case "main": playlist.model.next(playlist.model.actual_date, this.renderPlaylist.bind(this)); break;
+   	   			case "top100": playlist.model.top100year++; this.top100(); break;
+   	   			case "top10artists": playlist.model.top100year++; this.top10artists(); break;
    	   }
-   	   
    },
    prev : function() {
+       this.$pl_content.css({ position: 'relative', top : 0, left : 0});
        this.$pl_content.empty();
        this.$pl_content.addClass("pl-loading");
        switch (this.mode) {
-   	   	case "main": playlist.model.prev(playlist.model.actual_date, this.renderPlaylist.bind(this)); break;
-   	   	case "top100": playlist.model.top100year--; this.top100(); break;
-   	   	case "top10artists": playlist.model.top100year--; this.top10artists(); break;
-   	   }
+   	   		case "main": playlist.model.prev(playlist.model.actual_date, this.renderPlaylist.bind(this)); break;
+   	   		case "top100": playlist.model.top100year--; this.top100(); break;
+   	   		case "top10artists": playlist.model.top100year--; this.top10artists(); break;
+   	   	}
+   },
+   move : function(left_or_right, cb) {
+   	   var k = left_or_right == "right" ? -1 : 1;
+   	   var old_pos = { top: this.$pl_content.offset().top, left : this.$pl_content.offset().left };
+   	   this.$pl_content.css({position: 'absolute', top: this.$pl_content.offset().top, left:this.$pl_content.offset().left });
+   	   this.$pl_content.animate({
+   	   		left: k * $(window).width()
+   	   }, 300, cb);
    },
    archive : function() {
    	$('.pl-calendar').click();
@@ -236,10 +245,10 @@ window.addEventListener("drop", function(e) {
     			if ( Math.abs( xDiff ) > Math.abs( yDiff ) ) {/*most significant*/
         			if ( xDiff > 0 ) {
             			/* left swipe */ 
-            			this.next();
+            			this.move("right", this.next.bind(this));
         			} else {
             			/* right swipe */
-            			this.prev();
+            			this.move("left", this.prev.bind(this));
         			}                       
     			} else {
         			if ( yDiff > 0 ) {

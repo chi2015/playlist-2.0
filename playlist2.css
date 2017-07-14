@@ -18,7 +18,12 @@ body {
 	background-color: #333333;
 	text-align: center;
 	padding-bottom: 10px;
+	height: 100%;
 	
+}
+
+.list {
+	background-color: #333333;
 }
 
 .pl-dragover {
@@ -378,7 +383,7 @@ input#pl_date, select#pl_year {
     font-size: 22px;
     font-weight: normal;
     color: #bbbbbb;
-    margin:30px 0 5px 12px;
+    padding: 30px 0 5px 12px;
 }
 
 .list-item {
