@@ -18,8 +18,9 @@ body {
 	background-color: #333333;
 	text-align: center;
 	padding-bottom: 10px;
-	height: 100%;
-	
+	min-height: 100%;
+	position: relative;
+	overflow: hidden;
 }
 
 .list {
@@ -111,6 +112,7 @@ body {
 .left-menu {
 	position: absolute;
 	background-color: #444444;
+	z-index: 2;
 }
 
 @media screen and (min-width: 800px) {
@@ -376,6 +378,7 @@ input#pl_date, select#pl_year {
 
 .list {
     margin: 0 auto;
+    z-index: 1;
 }
 
 .list-title {

@@ -291,9 +291,9 @@ window.addEventListener("drop", function(e) {
    	if (!$('.pl-dragover').length) $('body').append('<div class="pl-dragover"></div>');
    },
    dropMain : function(e) {
-   		$('.pl-dragover').remove();
-   		var file = e.dataTransfer.files[0];
-   		this.upload(file);
+   		var files = e.dataTransfer.files;
+   		for (var i=0; i< files.length; i++) this.upload(files[i]);
+   		$('.pl-dragover').remove(); 
    },
    changeYear : function() {
    		var year = $('#pl_year').val();
