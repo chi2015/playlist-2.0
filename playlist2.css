@@ -105,7 +105,7 @@ body {
 
 @media screen and (max-width: 800px) and (orientation: portrait) {
 	.header {
-		height: 9vh;
+		height: 14vw;
 	}
 }
 
@@ -155,8 +155,8 @@ body {
 @media screen and (max-width: 800px) and (orientation: portrait) {
 
 	.main-menu {
-		background-size: 7vh 7vh;
-		background-position: 1vh 1vh;
+		background-size: 11vw 11vw;
+		background-position: 1.5vw 1.5vw;
 		background-repeat: no-repeat;
 		background-image: url('menu.png');
 	}
@@ -182,7 +182,7 @@ body {
 @media screen and (max-width: 800px) and (orientation: portrait) {
 	
 	.left-menu {
-		top: 9.9vh;
+		top: 15vw;
 		left: 0;
 	}
 	
@@ -257,8 +257,8 @@ body {
 
 @media screen and (max-width: 800px) and (orientation: portrait) {
 	.pl-calendar, .pl-upload, .pl-prev, .pl-next {
-		background-size: 7vh 7vh;
-		background-position: 1vh 1vh;
+		background-size: 10vw 10vw;
+		background-position: 2vw 2vw;
 	}
 }
 
@@ -309,6 +309,7 @@ body {
 	
 	.main-menu, .pl-prev, .pl-next, .pl-calendar, .pl-upload {
 		width: 9vw;
+		height: 9vw;
 		font-size: 6vw;
 	}
 }
@@ -316,8 +317,9 @@ body {
 @media screen and (max-width: 800px) and (orientation: portrait) {
 	
 	.main-menu, .pl-prev, .pl-next, .pl-calendar, .pl-upload {
-		width: 9vh;
-		font-size: 6vh;
+		width: 14vw;
+		height: 14vw;
+		font-size: 9vw;
 	}
 }
 
@@ -349,10 +351,10 @@ input#pl_date, select#pl_year {
 
 @media screen and (max-width: 800px) and (orientation: portrait) {
 	input#pl_date, select#pl_year {
-		width: 27vh;
-		height: 9vh;
-		font-size: 4.4vh;
-		padding: 2vh;
+		width: 45vw;
+		height: 14vw;
+		font-size: 7vw;
+		padding: 3vw;
 	}
 }
 
