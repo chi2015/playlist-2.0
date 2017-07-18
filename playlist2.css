@@ -383,6 +383,10 @@ input#pl_date, select#pl_year {
     z-index: 1;
 }
 
+.list.top {
+	padding-top: 6px;
+}
+
 .list-title {
 	text-align:left;
     font-size: 22px;

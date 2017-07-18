@@ -18,10 +18,13 @@ playlist.view = {
    	   }); 
    	   this.$delete_dialog = $('.dialog');
    	   $(dialog);
+   	   $('.dialog__action').on('click', function() {
+   			this.delete_playlist(playlist.model.actual_date, $('.dialog-password-input').val());
+   	   }.bind(this));
    	   $('#pl_file').on('change', this.changefile.bind(this));
    	   
    	   var year_str = '';
-   	   for (var y=2007; y<=playlist.model.top100year; y++)
+   	   for (var y=playlist.model.top100year; y>=2007; y--)
    	   	year_str+= '<option value="'+y+'">'+y+'</option>';
    	   	$('#pl_year').html(year_str);
    	   	$('#pl_year').val(playlist.model.top100year);
@@ -53,6 +56,7 @@ window.addEventListener("drop", function(e) {
    renderTop100 : function(data) {
    		if (data.error) this.showError(data.error);
    		this.mode = "top100";
+   		this.$pl_content.addClass('top');
    		$('#pl_date').hide();
         $('.pl-calendar').hide();
         $('#pl_year').show();
@@ -73,6 +77,7 @@ window.addEventListener("drop", function(e) {
    renderTop10Artists : function(data) {
    	if (data.error) this.showError(data.error);
    	this.mode = "top10artists";
+   	this.$pl_content.addClass('top');
    	$('#pl_date').hide();
         $('.pl-calendar').hide();
         $('#pl_year').show();
@@ -94,6 +99,7 @@ window.addEventListener("drop", function(e) {
    renderPlaylist : function(data) {
      if (data.error) this.showError(data.error);
      this.mode = "main";
+     this.$pl_content.removeClass('top');
      $('#pl_year').hide();
      $('.pl-calendar').show();
      $('#pl_date').show();
@@ -123,9 +129,7 @@ window.addEventListener("drop", function(e) {
    $delete_dialog : null,
    show_delete_dialog : function() {
    	$('.dialog__title').html('Delete playlist. Date: '+this.formatDate(playlist.model.actual_date));
-   	$('.dialog__action').on('click', function() {
-   		this.delete_playlist(playlist.model.actual_date, $('.dialog-password-input').val());
-   	}.bind(this));
+   	
    	$('.dialog__trigger').click();
    },
    mode : "main",
@@ -193,7 +197,7 @@ window.addEventListener("drop", function(e) {
    	var file = document.getElementById('pl_file').files[0];
    	this.upload(file);
    },
-   upload : function(file) {
+   upload : function(file, cb) {
 	var reader = new FileReader();
 	reader.readAsText(file, 'UTF-8');
 	reader.onload = function(event) {
@@ -201,7 +205,7 @@ window.addEventListener("drop", function(e) {
     	var fileName = file.name; 
     	$.post(playlist.model.upload_server, { data: result, name: fileName }, function(data) {
     		data = JSON.parse(data);
-    		if (data.status == "ok" && data.pl_date) this.get(data.pl_date);
+    		if (data.status == "ok" && data.pl_date) { this.get(data.pl_date); cb(); }
     		else if (data.status == "error") this.showError(data.error);
     		else this.showError("Error uploading playlist");
     	}.bind(this));
@@ -292,8 +296,17 @@ window.addEventListener("drop", function(e) {
    },
    dropMain : function(e) {
    		var files = e.dataTransfer.files;
-   		for (var i=0; i< files.length; i++) this.upload(files[i]);
-   		$('.pl-dragover').remove(); 
+   		var i=0, len = files.length;
+   		
+   		function queueUpload(i, len) {
+   			playlist.view.upload(files[i], function() {
+   				i++;
+   				if (i < len) queueUpload(i, len);
+   			});
+   		}
+   		
+   		queueUpload(0, len);
+   		$('.pl-dragover').remove();   		 
    },
    changeYear : function() {
    		var year = $('#pl_year').val();

@@ -52,7 +52,7 @@ $.fn.pl_calendar = function(options) {
 		this.$month_nextnext = $('.calendar-main#'+this.id+' .month-nextnext');
 		this.$month_prevprev = $('.calendar-main#'+this.id+' .month-prevprev');
 		this.$month = $('.calendar-main#'+this.id+' .month-name');
-		for (var y=options.yearRange[0]; y<=options.yearRange[1]; y++)
+		for (var y=options.yearRange[1]; y>=options.yearRange[0]; y--)
 			this.yRange.push(y);
 		this.setDate = options.setDate;
 		if (options.cDate) {
