@@ -258,7 +258,7 @@ body {
 @media screen and (max-width: 800px) and (orientation: portrait) {
 	.pl-calendar, .pl-upload, .pl-prev, .pl-next {
 		background-size: 7vh 7vh;
-		background-position: 0.6vh 0.6vh
+		background-position: 1vh 1vh;
 	}
 }
 
@@ -349,7 +349,7 @@ input#pl_date, select#pl_year {
 
 @media screen and (max-width: 800px) and (orientation: portrait) {
 	input#pl_date, select#pl_year {
-		width: 30vh;
+		width: 27vh;
 		height: 9vh;
 		font-size: 4.4vh;
 		padding: 2vh;
