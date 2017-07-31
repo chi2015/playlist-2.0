@@ -11,7 +11,7 @@
   opacity: 0;
   -webkit-transition: all 180ms ease-in;
   transition: all 180ms ease-in;
-  z-index: 3;
+  z-index: 4;
 }
 
 .dialog.dialog--active {

@@ -2,6 +2,7 @@
   font-family: "Arial";
   background-color: #ffffcc;
   position: absolute;
+  z-index: 3;
 }
 
 .calendar-head {
