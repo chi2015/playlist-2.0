@@ -16,11 +16,6 @@ playlist.view = {
    	   	}.bind(this),
    	   	is_mobile : $(window).width() < 800
    	   }); 
-   	   this.$delete_dialog = $('.dialog');
-   	   $(dialog);
-   	   $('.dialog__action').on('click', function() {
-   			this.delete_playlist(playlist.model.actual_date, $('.dialog-password-input').val());
-   	   }.bind(this));
    	   $('#pl_file').on('change', this.changefile.bind(this));
    	   
    	   var year_str = '';
@@ -126,11 +121,28 @@ window.addEventListener("drop", function(e) {
                         +clist_str);
      
    },
-   $delete_dialog : null,
    show_delete_dialog : function() {
-   	$('.dialog__title').html('Delete playlist. Date: '+this.formatDate(playlist.model.actual_date));
+   var that = this;
    	
-   	$('.dialog__trigger').click();
+   	swal({
+  		title: 'Delete playlist. Date: '+this.formatDate(playlist.model.actual_date),
+  text: "Enter password to delete:",
+  input: "password",
+  type: 'warning',
+  showCancelButton: true,
+  confirmButtonColor: '#3085d6',
+  cancelButtonColor: '#d33',
+  confirmButtonText: 'Delete',
+  cancelButtonText: 'Cancel',
+  confirmButtonClass: 'swal2-styled',
+  cancelButtonClass: 'swal2-styled',
+  buttonsStyling: false
+}).then(function (password) {
+  that.delete_playlist(playlist.model.actual_date, password);
+}, function (dismiss) {
+});
+   	
+   	
    },
    mode : "main",
    get : function(pl_date) {
@@ -184,7 +196,6 @@ window.addEventListener("drop", function(e) {
    			if (data.error) this.showError(data.error);
    			else if (data.ok) {
    				this.showError("Playlist successfully deleted");
-   				$('.dialog__close').click();
    				this.latest();
    			}
    			else this.showError("Error deleting playlist"); 
@@ -205,7 +216,7 @@ window.addEventListener("drop", function(e) {
     	var fileName = file.name; 
     	$.post(playlist.model.upload_server, { data: result, name: fileName }, function(data) {
     		data = JSON.parse(data);
-    		if (data.status == "ok" && data.pl_date) { this.get(data.pl_date); cb(); }
+    		if (data.status == "ok" && data.pl_date) { playlist.model.update_data(data.pl_date); this.get(data.pl_date); cb(); }
     		else if (data.status == "error") this.showError(data.error);
     		else this.showError("Error uploading playlist");
     	}.bind(this));
@@ -320,6 +331,6 @@ window.addEventListener("drop", function(e) {
    		}
    },
    showError : function(error_text) {
-   		alert(error_text);
+   		swal(error_text);
    }
 };

@@ -106,7 +106,11 @@ playlist.model = {
 	},
 	delete_playlist : function(pl_date, password, cb) {
 		this.remote("delete", { pl_date : pl_date, password : password }, function(data) {
-			if (data.ok && this.storage[pl_date]) delete this.storage[pl_date];
+			if (data.ok && this.storage[pl_date]) {
+				delete this.storage[pl_date];
+				if (this.top100_storage[moment(pl_date, "YYYY-MM-DD").format("YYYY")]) delete this.top100_storage[moment(pl_date, "YYYY-MM-DD").format("YYYY")];
+				if (this.top10_storage[moment(pl_date, "YYYY-MM-DD").format("YYYY")]) delete this.top10_storage[moment(pl_date, "YYYY-MM-DD").format("YYYY")];
+			}
 			cb(data);
 		}.bind(this));
 	},
@@ -115,6 +119,12 @@ playlist.model = {
 	},
 	next_date : function(date) {
 	   return moment(date, "YYYY-MM-DD").add(7, "days").format("YYYY-MM-DD");
+	},
+	update_data : function(date) {
+		if (moment(date, "YYYY-MM-DD").unix() > moment(this.latest_date, "YYYY-MM-DD").unix()) this.latest_date = date;
+		if (moment(date, "YYYY-MM-DD").unix() <= moment().unix()) this.current_date = date;
+		if (this.top100_storage[moment(date, "YYYY-MM-DD").format("YYYY")]) delete this.top100_storage[moment(date, "YYYY-MM-DD").format("YYYY")];
+		if (this.top10_storage[moment(date, "YYYY-MM-DD").format("YYYY")]) delete this.top10_storage[moment(date, "YYYY-MM-DD").format("YYYY")];
 	},
 	getItemChange : function(item) {
 		if (item.date_appear === this.actual_date) return 'new';
