@@ -134,8 +134,8 @@ window.addEventListener("drop", function(e) {
   cancelButtonColor: '#d33',
   confirmButtonText: 'Delete',
   cancelButtonText: 'Cancel',
-  confirmButtonClass: 'swal2-styled',
-  cancelButtonClass: 'swal2-styled',
+  confirmButtonClass: 'btn btn-success',
+  cancelButtonClass: 'btn btn-danger',
   buttonsStyling: false
 }).then(function (password) {
   that.delete_playlist(playlist.model.actual_date, password);
