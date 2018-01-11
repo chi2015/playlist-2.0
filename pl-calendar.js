@@ -127,13 +127,13 @@ $.fn.pl_calendar = function(options) {
 		this.$month_nextnext.removeClass('nodisplay').html('>>');
 		this.$month_prevprev.removeClass('nodisplay').html('<<');
 		
-		if (moment.unix(this.cTimestamp).get('year')==this.yRange[0]) {
+		if (moment.unix(this.cTimestamp).get('year')==this.yRange[this.yRange.length-1]) {
 			this.$month_prevprev.addClass('nodisplay').html('');
 			if (moment.unix(this.cTimestamp).get('month') == 0)
 				this.$month_prev.addClass('nodisplay').html('');
 		}
 		
-		if (moment.unix(this.cTimestamp).get('year')==this.yRange[this.yRange.length-1]) {
+		if (moment.unix(this.cTimestamp).get('year')==this.yRange[0]) {
 			this.$month_nextnext.addClass('nodisplay').html('');
 			if (moment.unix(this.cTimestamp).get('month') == 11)
 				this.$month_next.addClass('nodisplay').html('');

@@ -10,7 +10,7 @@ playlist.view = {
    	   playlist.model.current(this.renderPlaylist.bind(this));
    	   $('#pl_date').pl_calendar({
    	   	$button : $('.pl-calendar'),
-   	   	yearRange : [2007,2017],
+   	   	yearRange : [2007,moment().format('YYYY')],
    	   	setDate : function(date) {
    	   		this.get(date);
    	   	}.bind(this),
