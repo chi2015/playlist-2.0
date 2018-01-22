@@ -161,7 +161,8 @@ var playlist_app = new Vue({
 		loading : false,
 		showLeftMenu : false,
 		mode : 'main',
-		years_array : []		
+		years_array : [],
+		is_mobile : false		
 	},
 	created : function() {
 		this.current();
@@ -171,7 +172,7 @@ var playlist_app = new Vue({
 	computed: {
 		formatDate : function() {
    		var month = moment.months()[moment(this.actual_date, "YYYY-MM-DD").get('month')];
-   		/*if ($(window).width() < 800) month = month.substr(0,3);*/
+   		if (this.is_mobile) month = month.substr(0,3);
    		var day = moment(this.actual_date, "YYYY-MM-DD").get('date');
    		var day_suffix = '';
    		if ($(window).width() >= 800)
@@ -191,16 +192,25 @@ var playlist_app = new Vue({
 		}
 	},
 	mounted : function() {
+		window.addEventListener('resize', this.handleResize);
+		this.handleResize();
 		$('#pl_date').pl_calendar({
    	   	$button : $('.pl-calendar'),
    	   	yearRange : [2007,moment().format('YYYY')],
    	   	setDate : function(date) {
    	   		this.getPlaylist(date);
    	   	}.bind(this),
-   	   	is_mobile : $(window).width() < 800
+   	   	is_mobile : this.is_mobile
    	   }); 
+   	   
+   	   window.addEventListener('resize', this.handleResize);
+   	   this.showLeftMenu = !this.is_mobile;
+   	   
 	},
 	methods : {
+		handleResize : function() {
+			this.is_mobile = $(window).width() < 800;
+		},
 		remote : function(action, params, cb) {
 			//console.log("remote request", action, params);
 			this.loading = true;
