@@ -213,11 +213,6 @@ body {
 	}
 }
 
-.lm-item {
-	background-color: #313131;
-	cursor:pointer;
-}
-
 .vh-menu {
 	visibility: hidden;
 }
@@ -288,9 +283,22 @@ body {
 	background-image: url('upload-icon.png');
 }
 
-.main-menu, .pl-prev, .pl-next, .pl-calendar, .pl-upload {
+.menu-item {
 	background-color: #313131;
 	cursor: pointer;
+	-webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.menu-item:hover {
+	background-color: #393939;
+}
+
+.main-menu, .pl-prev, .pl-next, .pl-calendar, .pl-upload {
 	color: #bbbbbb;
 	margin-right: 7px;
 	display: -webkit-box;
@@ -455,11 +463,11 @@ input#pl_date, select#pl_year {
 
 @media screen and (min-width: 800px) {
 	.item-main {
-		padding: 7px;
+		padding: 4px 7px 7px;
 	}
 	
 	.item-info {
-		width: 60px;
+		width: 66px;
 		margin: 0 5px;
 		font-size: 36px;
 	}
@@ -483,11 +491,11 @@ input#pl_date, select#pl_year {
 
 @media screen and (max-width: 800px) and (orientation: landscape) {
 	.item-main {
-		padding: 1vw;
+		padding: 0.6vw 1vw 1vw;
 	}
 	
 	.item-info {
-		width: 9vw;
+		width: 10vw;
 		margin: 0 0.75vw;
 		font-size: 5.4vw;
 	}
@@ -511,11 +519,11 @@ input#pl_date, select#pl_year {
 
 @media screen and (max-width: 800px) and (orientation: portrait) {
 	.item-main {
-		padding: 1.56vw;
+		padding: 0.9vw 1.56vw 1.56vw;
 	}
 	
 	.item-info {
-		width: 14vw;
+		width: 17vw;
 		margin: 0 1.17vw;
 		font-size: 8.4vw;
 	}
@@ -541,7 +549,6 @@ input#pl_date, select#pl_year {
 	width:100%;
 	background-color: #181818;
     text-align:left;
-    margin-right: 5px;
 }
 
 .artist {
