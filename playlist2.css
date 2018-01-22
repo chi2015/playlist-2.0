@@ -460,7 +460,6 @@ input#pl_date, select#pl_year {
 	
 	.item-info {
 		width: 60px;
-		height: 60px;
 		margin: 0 5px;
 		font-size: 36px;
 	}
@@ -489,7 +488,6 @@ input#pl_date, select#pl_year {
 	
 	.item-info {
 		width: 9vw;
-		height: 9vw;
 		margin: 0 0.75vw;
 		font-size: 5.4vw;
 	}
@@ -518,7 +516,6 @@ input#pl_date, select#pl_year {
 	
 	.item-info {
 		width: 14vw;
-		height: 14vw;
 		margin: 0 1.17vw;
 		font-size: 8.4vw;
 	}
