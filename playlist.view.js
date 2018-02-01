@@ -306,6 +306,7 @@ window.addEventListener("drop", function(e) {
    	if (!$('.pl-dragover').length) $('body').append('<div class="pl-dragover"></div>');
    },
    dropMain : function(e) {
+   		
    		var files = e.dataTransfer.files;
    		var i=0, len = files.length;
    		

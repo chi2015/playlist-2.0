@@ -1,7 +1,7 @@
 <html>
     <head>
     	<title>Playlist</title>
-    	<link rel="stylesheet" type="text/css" href="playlist2.css?r=310720172120" />
+    	<link rel="stylesheet" type="text/css" href="playlist2.css?r=010220182120" />
     	<link rel="stylesheet" type="text/css" href="pl-calendar.css?r=310720172120" />
     	<link rel="stylesheet" type="text/css" href="sweetalert2.min.css" />
     	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -11,30 +11,26 @@
 	    <div class="main-block" id="playlist-app">
 	     <div class="header-title">Playlist</div>
 	     <div class="header">
-			<div class="main-menu" v-on:click="toggleLeftMenu()"></div>
+			<div class="main-menu menu-item" v-on:click="toggleLeftMenu()"></div>
 			<div class="left-menu" v-if="showLeftMenu">
-				<div class="lm-item" v-on:click="latest()">Latest</div>
-				<div class="lm-item" v-on:click="current()">Current</div>
-				<div class="lm-item" v-on:click="archive()">Archive</div>
-				<div class="lm-item" v-on:click="openfile()">Add</div>
-				<div class="lm-item" v-on:click="top100()">Top 100</div>
-				<div class="lm-item" v-on:click="top10artists()">Top 10 Artists</div>
-				<div class="lm-item delete-menu-item" onclick="playlist.view.show_delete_dialog()">Delete</div>
+				<div class="lm-item menu-item" v-on:click="latest()">Latest</div>
+				<div class="lm-item menu-item" v-on:click="current()">Current</div>
+				<div class="lm-item menu-item" v-on:click="archive()">Archive</div>
+				<div class="lm-item menu-item" v-on:click="openfile()">Add</div>
+				<div class="lm-item menu-item" v-on:click="top100()">Top 100</div>
+				<div class="lm-item menu-item" v-on:click="top10artists()">Top 10 Artists</div>
+				<div class="lm-item menu-item delete-menu-item" onclick="playlist.view.show_delete_dialog()">Delete</div>
 			</div>
 			<div class="date-block">
-				<div class="pl-prev" v-on:click="move('left')"></div>
-				<input id="pl_date" v-model="formatDate" v-if="mode == 'main'"></input>
+				<div class="pl-prev menu-item" v-on:click="move('left')"></div>
+				<input id="pl_date" v-model="formatDate" v-if="mode == 'main'" readonly></input>
 				<select id="pl_year" v-if="mode == 'top100' || mode == 'top10artists'" v-model="top100year" v-on:change="change_year()">
 					<option v-for="year in years_array" :value="year">{{year}}</option>
 				</select>
-				<div class="pl-calendar"></div>
-				<div class="pl-next" v-on:click="move('right')"></div>
+				<div class="pl-calendar menu-item"></div>
+				<div class="pl-next menu-item" v-on:click="move('right')"></div>
 			</div>
-			<div class="pl-upload" title="Add playlist" onclick="playlist.view.openfile()"></div>
-	       <!-- <button id="pl_current" onclick="playlist.view.current()">Current</button>
-	        <button id="pl_latest" onclick="playlist.view.latest()">Latest</button>
-	        <button id="pl_next" onclick="playlist.view.next()">Next</button>
-	        <button id="pl_prev" onclick="playlist.view.prev()">Prev</button>-->
+			<div class="pl-upload menu-item" title="Add playlist" v-on:click="openfile()"></div>
 	     </div>
 	     <div id="playlist-content" class="list" v-bind:class="{ list : true, 'pl-loading' : loading}">
 			<template v-if="!loading && storage[actual_date] && mode == 'main'">
@@ -91,13 +87,14 @@
 				</div>
 			</template>
 	     </div>
+	     <input type="file" id="pl_file" style="display:none;" v-on:change="changefile()" ref="pl_file"/>
 	    </div>
-	    <input type="file" id="pl_file" style="display:none;"/>
-	     <script type="text/javascript" src="vue-2.5.13.js"></script>
+	    
+	    <script type="text/javascript" src="vue-2.5.13.js"></script>
 	    <script type="text/javascript" src="jquery.min.3.1.1.js"></script>
 	    <script type="text/javascript" src="moment.min.2.18.1.js"></script>
 	    <script type="text/javascript" src="sweetalert2.min.js"></script>
 	    <script type="text/javascript" src="pl-calendar.js?r=180720172015"></script>
-	    <script type="text/javascript" src="playlist.model.js?r=040920171921"></script>	
+	    <script type="text/javascript" src="playlist.model.js?r=010220181921"></script>	
 	</body>
 </html>

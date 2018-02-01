@@ -162,7 +162,7 @@ var playlist_app = new Vue({
 		showLeftMenu : false,
 		mode : 'main',
 		years_array : [],
-		is_mobile : false		
+		is_mobile : false	
 	},
 	created : function() {
 		this.current();
@@ -205,6 +205,10 @@ var playlist_app = new Vue({
    	   
    	   window.addEventListener('resize', this.handleResize);
    	   this.showLeftMenu = !this.is_mobile;
+   	   window.addEventListener("drop",function(e){
+		  e = e || event;
+		  e.preventDefault();
+		},false);
    	   
 	},
 	methods : {
@@ -259,6 +263,9 @@ var playlist_app = new Vue({
 			  }
 			  if (data.list) this.storage[data.date] = data.list;
 			}.bind(this));
+		},
+		archive: function() {
+			$('.pl-calendar').click();
 		},
 		next : function() {
 			switch (this.mode) {
@@ -330,6 +337,34 @@ var playlist_app = new Vue({
 			if (this.mode == "top100") this.top100();
 			if (this.mode == "top10artists") this.top10artists();
 		},
+		openfile : function() {
+			$('#pl_file').click();
+		},
+		changefile : function() {
+			var file = this.$refs.pl_file.files[0];
+			this.upload_file(file);
+		},
+		upload_file: function(file) {
+			var reader = new FileReader();
+			reader.readAsText(file, 'UTF-8');
+			reader.onload = function(event) {
+				var result = event.target.result;
+				var fileName = file.name; 
+				$.post(this.upload_server, { data: result, name: fileName }, function(data) {
+					console.log('response data', data);
+					data = JSON.parse(data);
+					if (data.status == "ok" && data.pl_date) { this.update_data(data.pl_date); this.getPlaylist(data.pl_date); }
+					else if (data.status == "error") this.showError(data.error);
+					else this.showError("Error uploading playlist");
+			}.bind(this));
+			}.bind(this);
+		},
+		update_data : function(date) {
+			if (moment(date, "YYYY-MM-DD").unix() > moment(this.latest_date, "YYYY-MM-DD").unix()) this.latest_date = date;
+			if (moment(date, "YYYY-MM-DD").unix() <= moment().unix()) this.current_date = date;
+			if (this.top100_storage[moment(date, "YYYY-MM-DD").format("YYYY")]) delete this.top100_storage[moment(date, "YYYY-MM-DD").format("YYYY")];
+			if (this.top10_storage[moment(date, "YYYY-MM-DD").format("YYYY")]) delete this.top10_storage[moment(date, "YYYY-MM-DD").format("YYYY")];
+		},
 		delete_playlist : function(pl_date, password) {
 			this.remote("delete", { pl_date : pl_date, password : password }, function(data) {
 				if (data.ok && this.storage[pl_date]) {
@@ -364,6 +399,9 @@ var playlist_app = new Vue({
 	   },
 	   toggleLeftMenu : function() {
 		this.showLeftMenu = !this.showLeftMenu;
+	   },
+	   showError : function() {
+		   
 	   }
 	}
 });
