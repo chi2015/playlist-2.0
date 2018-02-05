@@ -170,6 +170,10 @@ var playlist_app = new Vue({
 			this.years_array.push(y);
 	},
 	computed: {
+		actualDate : function() {
+			return this.actual_date.substring(0,10);
+		},
+		
 		formatDate : function() {
    		var month = moment.months()[moment(this.actual_date, "YYYY-MM-DD").get('month')];
    		if (this.is_mobile) month = month.substr(0,3);
@@ -194,14 +198,14 @@ var playlist_app = new Vue({
 	mounted : function() {
 		window.addEventListener('resize', this.handleResize);
 		this.handleResize();
-		$('#pl_date').pl_calendar({
+		/*$('#pl_date').pl_calendar({
    	   	$button : $('.pl-calendar'),
    	   	yearRange : [2007,moment().format('YYYY')],
    	   	setDate : function(date) {
    	   		this.getPlaylist(date);
    	   	}.bind(this),
    	   	is_mobile : this.is_mobile
-   	   }); 
+   	   }); */
    	   
    	   window.addEventListener('resize', this.handleResize);
    	   this.showLeftMenu = !this.is_mobile;
@@ -228,7 +232,7 @@ var playlist_app = new Vue({
 				cb(data);
 			}.bind(this));
 		},
-		getPlaylist : function(pl_date) {
+		getPlaylist : function(pl_date) { console.log('get', pl_date);
 			if (this.storage[pl_date]) {
 			 this.actual_date = pl_date;
 			}
@@ -270,10 +274,10 @@ var playlist_app = new Vue({
 		next : function() {
 			switch (this.mode) {
 				case "main":
-					if (this.storage[this.next_date(this.actual_date)]) {
-					this.actual_date = this.next_date(this.actual_date);
+					if (this.storage[this.next_date(this.actualDate)]) {
+					this.actual_date = this.next_date(this.actualDate);
 					}
-					else this.remote("next", {pl_date : this.actual_date}, function(data) {
+					else this.remote("next", {pl_date : this.actualDate}, function(data) {
 					  if (data.date) this.actual_date = data.date;
 					  if (data.list) this.storage[data.date] = data.list;
 					}.bind(this));
@@ -286,10 +290,10 @@ var playlist_app = new Vue({
 		prev : function() {
 		   switch (this.mode) {
 			   case "main":
-				   if (this.storage[this.prev_date(this.actual_date)]) {
-					this.actual_date = this.prev_date(this.actual_date);
+				   if (this.storage[this.prev_date(this.actualDate)]) {
+					this.actual_date = this.prev_date(this.actualDate);
 					}
-					else this.remote("prev", {pl_date : this.actual_date}, function(data) {
+					else this.remote("prev", {pl_date : this.actualDate}, function(data) {
 					  if (data.date) this.actual_date = data.date;
 					  if (data.list) this.storage[data.date] = data.list;
 					}.bind(this));
