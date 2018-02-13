@@ -466,6 +466,10 @@ input#pl_date, select#pl_year {
 		padding: 4px 7px 7px;
 	}
 	
+	.item-mr {
+		margin-right: 5px;
+	}
+	
 	.item-info {
 		width: 66px;
 		margin: 0 5px;
@@ -494,6 +498,10 @@ input#pl_date, select#pl_year {
 		padding: 0.6vw 1vw 1vw;
 	}
 	
+	.item-mr {
+		margin-right: 0.75vw;
+	}
+	
 	.item-info {
 		width: 10vw;
 		margin: 0 0.75vw;
@@ -520,6 +528,10 @@ input#pl_date, select#pl_year {
 @media screen and (max-width: 800px) and (orientation: portrait) {
 	.item-main {
 		padding: 0.9vw 1.56vw 1.56vw;
+	}
+	
+	.item-mr {
+		margin-right: 1.17vw;
 	}
 	
 	.item-info {
