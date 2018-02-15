@@ -25,8 +25,8 @@
 			<div class="date-block">
 				<div class="pl-prev menu-item" v-on:click="move('left')"></div>
 				<!--<input id="pl_date" v-model="formatDate" v-if="mode == 'main'" readonly></input>-->
-				<datetime id="pl_date" v-model="actual_date" v-on:change="getPlaylist(actual_date)" v-if="mode == 'main'"></datetime>
-				<select id="pl_year" v-if="mode == 'top100' || mode == 'top10artists'" v-model="top100year" v-on:change="change_year()">
+				<datetime id="pl_date" v-model="actual_date" v-if="mode == 'main'"></datetime>
+				<select id="pl_year" v-if="mode == 'top100' || mode == 'top10artists'" v-model="top100year">
 					<option v-for="year in years_array" :value="year">{{year}}</option>
 				</select>
 				<div class="pl-calendar menu-item"></div>
@@ -35,39 +35,39 @@
 			<div class="pl-upload menu-item" title="Add playlist" v-on:click="openfile()"></div>
 	     </div>
 	     <div id="playlist-content" class="list" v-bind:class="{ list : true, 'pl-loading' : loading}">
-			<template v-if="!loading && storage[actualDate] && mode == 'main'">
+			<template v-if="!loading && playlist.length && mode == 'main'">
 				<div class="list-title">A List</div>
-				<template v-for="item in storage[actualDate]">
+				<template v-if="playlist" v-for="item in playlist">
 					<div class="list-item" v-if="item.score == 47">
 						<div v-bind:class="['item-info', itemInfoClass(item) ? itemInfoClass(item) : '']"></div>
-						<div class="item-main">
+						<div class="item-main item-mr">
 							<div class="artist" v-html="item.artist"></div>
 							<div class="song" v-html="item.title"></div>
 						</div>
 					</div>
 				</template>
 				<div class="list-title">B List</div>
-				<template v-if="storage[actualDate]" v-for="item in storage[actualDate]">
+				<template v-if="playlist.length" v-for="item in playlist">
 					<div class="list-item" v-if="item.score == 28">
 						<div v-bind:class="['item-info', itemInfoClass(item) ? itemInfoClass(item) : '']"></div>
-						<div class="item-main">
+						<div class="item-main item-mr">
 							<div class="artist" v-html="item.artist"></div>
-							<div class="song">{{item.title}}</div>
+							<div class="song" v-html="item.title"></div>
 						</div>
 					</div>
 				</template>
 				<div class="list-title">C List</div>
-				<template v-if="storage[actualDate]" v-for="item in storage[actualDate]">
+				<template v-if="playlist.length" v-for="item in playlist">
 					<div class="list-item" v-if="item.score == 23">
 						<div v-bind:class="['item-info', itemInfoClass(item) ? itemInfoClass(item) : '']"></div>
-						<div class="item-main">
+						<div class="item-main item-mr">
 							<div class="artist" v-html="item.artist"></div>
 							<div class="song" v-html="item.title"></div>
 						</div>
 					</div>
 				</template>
 			</template>
-			<template v-if="!loading && top100_storage[top100year] && mode == 'top100'" v-for="(item, index) in top100_storage[top100year]">
+			<template v-if="mode == 'top100' && !loading && top100data.length" v-for="(item, index) in top100data">
 				<div class="list-item">
 					<div class="item-info top100">{{index + 1}}</div>
 					<div class="item-main">

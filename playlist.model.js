@@ -152,7 +152,7 @@ var playlist_app = new Vue({
 		upload_server : "http://chi2016.ru/playlist/server/upload.php",
 		actual_date : moment().format('YYYY-MM-DD'),
 		latest_date : false,
-		current_date : moment().format('YYYY-MM-DD'),
+		current_date : false,
 		top100year : +moment().format('YYYY') - 1,
 		current_year : +moment().format('YYYY') - 1,
 		storage : {},
@@ -165,34 +165,51 @@ var playlist_app = new Vue({
 		is_mobile : false	
 	},
 	created : function() {
-		this.current();
+		//this.current();
 		 for (var y=this.top100year; y>=2007; y--)
 			this.years_array.push(y);
 	},
 	computed: {
-		actualDate : function() {
-			return this.actual_date.substring(0,10);
+		playlist : function() {
+			var plDate = this.actual_date.substring(0,10);
+			if (!this.storage[plDate]) {
+				this.storage[plDate] = [];
+				this.loading = true;
+				this.remote("current", {current_date : plDate}, function(data) {
+					if (data.date) this.actual_date = data.date;
+					if (data.list) this.storage[data.date] = data.list;
+					if (!this.current_date) this.current_date = this.actual_date;
+					this.loading = false;
+				}.bind(this));
+			};
+			
+			return this.storage[plDate];
 		},
 		
-		formatDate : function() {
-   		var month = moment.months()[moment(this.actual_date, "YYYY-MM-DD").get('month')];
-   		if (this.is_mobile) month = month.substr(0,3);
-   		var day = moment(this.actual_date, "YYYY-MM-DD").get('date');
-   		var day_suffix = '';
-   		if ($(window).width() >= 800)
-   		{
-   		switch (day) 
-   		{
-   			case 1:
-   			case 21:
-   			case 31: day_suffix = 'st'; break;
-   			case 2:
-   			case 22: day_suffix = 'nd'; break;
-   			case 3: day_suffix = 'rd'; break;
-   			default: day_suffix = 'th'; break;
-   		}
-   		}
-   		return day+day_suffix+' '+month+' '+moment(this.actual_date, "YYYY-MM-DD").get('year');
+		top100data : function() { console.log(this.top100year);
+			
+			if (this.mode!="top100") return [];
+			
+			if (!this.top100_storage[this.top100year])
+			{
+				this.loading = true;
+				this.top100_storage[this.top100year] = [];
+				this.remote("top100", {year : this.top100year }, function(data) {
+					if (data.year) this.top100year = data.year;
+					if (data.list) this.top100_storage[this.top100year] = data.list;
+					console.log(this.top100_storage);
+					this.loading = false;
+				}.bind(this));
+			}
+			return this.top100_storage[this.top100year];
+		},
+		
+		top10data : function() {
+			
+		},
+		
+		actualDate : function() {
+			return this.actual_date.substring(0,10);
 		}
 	},
 	mounted : function() {
@@ -230,15 +247,6 @@ var playlist_app = new Vue({
 				console.log("remote response", data);
 				this.loading = false;
 				cb(data);
-			}.bind(this));
-		},
-		getPlaylist : function(pl_date) { console.log('get', pl_date);
-			if (this.storage[pl_date]) {
-			 this.actual_date = pl_date;
-			}
-			else this.remote("current", {current_date : pl_date}, function(data) {
-			  if (data.date) this.actual_date = data.date;
-			  if (data.list) this.storage[data.date] = data.list;
 			}.bind(this));
 		},
 		current : function() {
@@ -319,13 +327,6 @@ var playlist_app = new Vue({
 		},
 		top100 : function() {
 			this.mode = 'top100';
-			if (this.top100_storage[this.top100year]) {
-				this.current_year = this.top100year;
-			}
-			else this.remote("top100", {year : this.top100year }, function(data) {
-				if (data.year) this.current_year = this.top100year; else this.top100year = this.current_year;
-				if (data.list) this.top100_storage[this.top100year] = data.list
-			}.bind(this));
 		},
 		top10artists : function() {
 			this.mode = 'top10artists';
@@ -357,7 +358,7 @@ var playlist_app = new Vue({
 				$.post(this.upload_server, { data: result, name: fileName }, function(data) {
 					console.log('response data', data);
 					data = JSON.parse(data);
-					if (data.status == "ok" && data.pl_date) { this.update_data(data.pl_date); this.getPlaylist(data.pl_date); }
+					if (data.status == "ok" && data.pl_date) { this.update_data(data.pl_date); this.actual_date = data.pl_date; }
 					else if (data.status == "error") this.showError(data.error);
 					else this.showError("Error uploading playlist");
 			}.bind(this));
