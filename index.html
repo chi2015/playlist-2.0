@@ -77,7 +77,7 @@
 					<div class="item-info total">{{item.total}}</div>
 				</div>
 			</template>
-			<template v-if="!loading && top10_storage[top100year] && mode == 'top10artists'" v-for="(item, index) in top10_storage[top100year]">
+			<template v-if="mode == 'top10artists' && !loading && top10data.length" v-for="(item, index) in top10data">
 				<div class="list-item">
 					<div class="item-info top100">{{index + 1}}</div>
 					<div class="item-main">

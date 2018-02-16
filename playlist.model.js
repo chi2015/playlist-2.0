@@ -165,7 +165,6 @@ var playlist_app = new Vue({
 		is_mobile : false	
 	},
 	created : function() {
-		//this.current();
 		 for (var y=this.top100year; y>=2007; y--)
 			this.years_array.push(y);
 	},
@@ -195,17 +194,30 @@ var playlist_app = new Vue({
 				this.loading = true;
 				this.top100_storage[this.top100year] = [];
 				this.remote("top100", {year : this.top100year }, function(data) {
-					if (data.year) this.top100year = data.year;
+					if (data.year) { this.top100year = ""; this.top100year = data.year; }
 					if (data.list) this.top100_storage[this.top100year] = data.list;
-					console.log(this.top100_storage);
 					this.loading = false;
 				}.bind(this));
 			}
+			
 			return this.top100_storage[this.top100year];
 		},
 		
 		top10data : function() {
+			if (this.mode!="top10artists") return [];
 			
+			if (!this.top10_storage[this.top100year])
+			{
+				this.loading = true;
+				this.top10_storage[this.top100year] = [];
+				this.remote("top10artists", {year : this.top100year }, function(data) {
+					if (data.year) { this.top100year = ""; this.top100year = data.year; }
+					if (data.list) this.top10_storage[this.top100year] = data.list;
+					this.loading = false;
+				}.bind(this));
+			}
+			
+			return this.top10_storage[this.top100year];
 		},
 		
 		actualDate : function() {
@@ -292,7 +304,7 @@ var playlist_app = new Vue({
 					break;
 				 case "top100":
 			     case "top10artists":
-					this.top100year++; this.change_year(); break;
+					this.top100year++; break;
 			}
 		},
 		prev : function() {
@@ -308,7 +320,7 @@ var playlist_app = new Vue({
 					break;
 			   case "top100":
 			   case "top10artists":
-					this.top100year--; this.change_year(); break;
+					this.top100year--; break;
 		   }
 		},
 		move : function(direction) {
@@ -330,17 +342,6 @@ var playlist_app = new Vue({
 		},
 		top10artists : function() {
 			this.mode = 'top10artists';
-			if (this.top10_storage[this.top100year]) {
-				this.current_year = this.top100year;
-			}
-			else this.remote("top10artists", {year : this.top100year }, function(data) {
-				if (data.year) this.current_year = this.top100year; else this.top100year = this.current_year;
-				if (data.list) this.top10_storage[this.top100year] = data.list;
-			}.bind(this));
-		},
-		change_year : function() {
-			if (this.mode == "top100") this.top100();
-			if (this.mode == "top10artists") this.top10artists();
 		},
 		openfile : function() {
 			$('#pl_file').click();
