@@ -171,8 +171,8 @@ var playlist_app = new Vue({
 	computed: {
 		playlist : function() {
 			var plDate = this.actual_date.substring(0,10);
+			console.log('playlist date', plDate, this.storage);
 			if (!this.storage[plDate]) {
-				this.storage[plDate] = [];
 				this.loading = true;
 				this.remote("current", {current_date : plDate}, function(data) {
 					if (data.date) this.actual_date = data.date;
@@ -180,6 +180,7 @@ var playlist_app = new Vue({
 					if (!this.current_date) this.current_date = this.actual_date;
 					this.loading = false;
 				}.bind(this));
+				return [];
 			};
 			
 			return this.storage[plDate];
@@ -192,12 +193,16 @@ var playlist_app = new Vue({
 			if (!this.top100_storage[this.top100year])
 			{
 				this.loading = true;
-				this.top100_storage[this.top100year] = [];
 				this.remote("top100", {year : this.top100year }, function(data) {
 					if (data.year) { this.top100year = ""; this.top100year = data.year; }
 					if (data.list) this.top100_storage[this.top100year] = data.list;
+					if (data.error) { 
+						if (this.top100year > this.years_array[0]) this.top100year--;
+						if (this.top100year < this.years_array[this.years_array.length - 1]) this.top100year++;
+					}
 					this.loading = false;
 				}.bind(this));
+				return [];
 			}
 			
 			return this.top100_storage[this.top100year];
@@ -209,12 +214,16 @@ var playlist_app = new Vue({
 			if (!this.top10_storage[this.top100year])
 			{
 				this.loading = true;
-				this.top10_storage[this.top100year] = [];
 				this.remote("top10artists", {year : this.top100year }, function(data) {
 					if (data.year) { this.top100year = ""; this.top100year = data.year; }
 					if (data.list) this.top10_storage[this.top100year] = data.list;
+					if (data.error) { 
+						if (this.top100year > this.years_array[0]) this.top100year--;
+						if (this.top100year < this.years_array[this.years_array.length - 1]) this.top100year++;
+					}
 					this.loading = false;
 				}.bind(this));
+				return [];
 			}
 			
 			return this.top10_storage[this.top100year];
@@ -288,8 +297,8 @@ var playlist_app = new Vue({
 			  if (data.list) this.storage[data.date] = data.list;
 			}.bind(this));
 		},
-		archive: function() {
-			$('.pl-calendar').click();
+		archive: function(e) { console.log('e', e);
+			this.$refs.picker.open(e);
 		},
 		next : function() {
 			switch (this.mode) {
