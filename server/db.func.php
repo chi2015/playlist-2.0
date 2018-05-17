@@ -247,6 +247,7 @@ function pl_top100($year) {
         
 	
 	$year = intval($year);
+	check_bonus($year, $link);
 	$query_select_100 = "SELECT songs.artist AS artist, songs.title AS title, SUM( playlist.score ) + (
 SELECT bonus
 FROM bonuses
@@ -289,7 +290,7 @@ LIMIT 100";
 		                      'max_score' => $line_100["max_score"]);
 	}
 	mysql_close($link);
-	return array('ok' => true, 'year' => $year, 'list' => $top100_arr);
+	return ['ok' => true, 'year' => $year, 'list' => $top100_arr];
 }
 
 function pl_top10artists($year) {
@@ -307,7 +308,7 @@ function pl_top10artists($year) {
         
 	
 	$year = intval($year);
-    
+    check_bonus($year, $link);
     $query_select_10 = "SELECT artist, SUM(total) AS artist_total, COUNT(title) AS songs FROM (SELECT songs.artist AS artist, songs.title AS title, SUM( playlist.score ) + (
 SELECT bonus
 FROM bonuses
@@ -403,5 +404,37 @@ function pl_delete($pl_date, $password) {
 	
 	mysql_close($link);		
 	return ['ok' => true];
+}
+
+function check_bonus($year, $link) {
+	
+	$query_check_bonus = "SELECT COUNT(1) FROM bonuses WHERE max_date >= '$year-01-01'";
+	$res_check_bonus = mysql_query($query_check_bonus);
+
+	if (!$res_check_bonus)
+	{
+			mysql_close($link);
+			return false;
+	}
+
+	$cnt = mysql_fetch_row($res_check_bonus);
+    
+	if ($cnt[0] < 1) {
+		$lastFeb = isLeap($year) ? 29 : 28;
+		$query_ins_bonuses = "INSERT INTO bonuses (max_date, bonus) VALUES ('$year-01-01', 150), ('$year-01-31', 135), ('$year-02-$lastFeb', 120), ('$year-03-31', 105), ('$year-04-30', 90), ('$year-05-31', 75), ('$year-06-30', 150), ('$year-07-31', 120), ('$year-08-31', 90), ('$year-09-30', 60), ('$year-10-31', 30), ('$year-11-30', 0)";
+		$res_ins_bonuses = mysql_query($query_ins_bonuses);
+		if (!$res_ins_bonuses)
+		{
+			mysql_close($link);	
+			return false;
+		}
+	}
+
+	return $cnt;
+}
+
+function isLeap($year)
+{
+    return date("L", mktime(0,0,0, 7,7, $year));
 }
 ?>
