@@ -145,6 +145,40 @@
    }
 };
 */
+
+Vue.component('items-list', {
+	props : ['title', 'list', 'score'],
+	template : `<div>
+					<div class="list-title">{{title}}</div>
+					<list-item v-for="item in list" v-if="item.score == score" v-bind:item="item"></list-item>
+				</div>`
+});
+
+Vue.component('list-item', {
+	props : ['item'],
+	template: `<div class="list-item">
+	<div v-bind:class="['item-info', item.item_class ? item.item_class : '']"></div>
+	<div class="item-main item-mr">
+		<div class="artist" v-html="item.artist"></div>
+		<div class="song" v-html="item.title"></div>
+	</div>
+</div>`
+});
+
+Vue.component('top-list-item', {
+	props : ['item', 'num', 'mode'],
+	template : `<div class="list-item">
+	<div class="item-info top100">{{num + 1}}</div>
+	<div class="item-main">
+		<div class="artist" v-html="item.artist"></div>
+		<div class="song" v-html="item.title"></div>
+	</div>
+	<div class="item-info total" v-if="mode=='top100'">{{item.total}}</div>
+	<div class="item-info total" v-if="mode=='top10artists'">{{item.artist_total}}</div>
+	<div class="item-info top100" v-if="mode=='top10artists'">{{item.songs}}</div>
+</div>`
+});
+
 var playlist_app = new Vue({
 	el : "#playlist-app",
 	data : {
@@ -176,7 +210,7 @@ var playlist_app = new Vue({
 				this.loading = true;
 				this.remote("current", {current_date : plDate}, function(data) {
 					if (data.date) this.actual_date = data.date;
-					if (data.list) this.storage[data.date] = data.list;
+					if (data.list) this.setStorage(data.date, data.list);
 					if (!this.current_date) this.current_date = this.actual_date;
 					this.loading = false;
 				}.bind(this));
@@ -281,7 +315,7 @@ var playlist_app = new Vue({
 				this.actual_date = data.date;
 				this.current_date = data.date;
 			  }
-			  if (data.list) this.storage[data.date] = data.list;
+			  if (data.list) this.setStorage(data.date, data.list);
 			}.bind(this));
 		},
 		latest : function() {
@@ -294,7 +328,7 @@ var playlist_app = new Vue({
 				this.actual_date = data.date;
 				this.latest_date = data.date;
 			  }
-			  if (data.list) this.storage[data.date] = data.list;
+			  if (data.list) this.setStorage(data.date, data.list);
 			}.bind(this));
 		},
 		archive: function(e) { console.log('e', e);
@@ -308,7 +342,7 @@ var playlist_app = new Vue({
 					}
 					else this.remote("next", {pl_date : this.actualDate}, function(data) {
 					  if (data.date) this.actual_date = data.date;
-					  if (data.list) this.storage[data.date] = data.list;
+					  if (data.list) this.setStorage(data.date, data.list);
 					}.bind(this));
 					break;
 				 case "top100":
@@ -324,7 +358,7 @@ var playlist_app = new Vue({
 					}
 					else this.remote("prev", {pl_date : this.actualDate}, function(data) {
 					  if (data.date) this.actual_date = data.date;
-					  if (data.list) this.storage[data.date] = data.list;
+					  if (data.list) this.setStorage(data.date, data.list);
 					}.bind(this));
 					break;
 			   case "top100":
@@ -411,6 +445,12 @@ var playlist_app = new Vue({
 		   for (var i=0; i< list.length; i++)
 			 if (list[i].id == id) return list[i];
 		   return false;
+	   },
+	   setStorage : function(date, list) {
+			this.storage[date] = list;
+			this.storage[date].forEach(function(item) {
+				item.item_class = this.itemInfoClass(item);
+			}.bind(this))
 	   },
 	   toggleLeftMenu : function() {
 		this.showLeftMenu = !this.showLeftMenu;

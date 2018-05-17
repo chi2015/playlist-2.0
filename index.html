@@ -36,58 +36,22 @@
 	     </div>
 	     <div id="playlist-content" class="list" v-bind:class="{ list : true, 'pl-loading' : loading}">
 			<template v-if="!loading && playlist.length && mode == 'main'">
-				<div class="list-title">A List</div>
-				<template v-if="playlist" v-for="item in playlist">
-					<div class="list-item" v-if="item.score == 47">
-						<div v-bind:class="['item-info', itemInfoClass(item) ? itemInfoClass(item) : '']"></div>
-						<div class="item-main item-mr">
-							<div class="artist" v-html="item.artist"></div>
-							<div class="song" v-html="item.title"></div>
-						</div>
-					</div>
-				</template>
-				<div class="list-title">B List</div>
-				<template v-if="playlist.length" v-for="item in playlist">
-					<div class="list-item" v-if="item.score == 28">
-						<div v-bind:class="['item-info', itemInfoClass(item) ? itemInfoClass(item) : '']"></div>
-						<div class="item-main item-mr">
-							<div class="artist" v-html="item.artist"></div>
-							<div class="song" v-html="item.title"></div>
-						</div>
-					</div>
-				</template>
-				<div class="list-title">C List</div>
-				<template v-if="playlist.length" v-for="item in playlist">
-					<div class="list-item" v-if="item.score == 23">
-						<div v-bind:class="['item-info', itemInfoClass(item) ? itemInfoClass(item) : '']"></div>
-						<div class="item-main item-mr">
-							<div class="artist" v-html="item.artist"></div>
-							<div class="song" v-html="item.title"></div>
-						</div>
-					</div>
-				</template>
+				<items-list v-bind:list="playlist" v-bind:score="47" v-bind:title="'A-List'"></items-list>
+				<items-list v-bind:list="playlist" v-bind:score="28" v-bind:title="'B-List'"></items-list>
+				<items-list v-bind:list="playlist" v-bind:score="23" v-bind:title="'C-List'"></items-list>
 			</template>
-			<template v-if="mode == 'top100' && !loading && top100data.length" v-for="(item, index) in top100data">
-				<div class="list-item">
-					<div class="item-info top100">{{index + 1}}</div>
-					<div class="item-main">
-						<div class="artist" v-html="item.artist"></div>
-						<div class="song" v-html="item.title"></div>
-					</div>
-					<div class="item-info total">{{item.total}}</div>
-				</div>
-			</template>
-			<template v-if="mode == 'top10artists' && !loading && top10data.length" v-for="(item, index) in top10data">
-				<div class="list-item">
-					<div class="item-info top100">{{index + 1}}</div>
-					<div class="item-main">
-						<div class="artist" v-html="item.artist"></div>
-						<div class="song" v-html="item.title"></div>
-					</div>
-					<div class="item-info total">{{item.artist_total}}</div>
-					<div class="item-info top100">{{item.songs}}</div>
-				</div>
-			</template>
+			<top-list-item v-if="mode == 'top100' && !loading && top100data.length" 
+						   v-for="(item, index) in top100data" 
+						   v-bind:item="item" 
+						   v-bind:num="index" 
+						   v-bind:mode="mode">
+			</top-list-item>
+			<top-list-item v-if="mode == 'top10artists' && !loading && top10data.length" 
+						   v-for="(item, index) in top10data" 
+						   v-bind:item="item" 
+						   v-bind:num="index" 
+						   v-bind:mode="mode">
+			</top-list-item>
 	     </div>
 	     <input type="file" id="pl_file" style="display:none;" v-on:change="changefile()" ref="pl_file"/>
 	    </div>
@@ -99,6 +63,6 @@
 	    <script type="text/javascript" src="moment.min.2.18.1.js"></script>
 	    <script type="text/javascript" src="sweetalert2.min.js"></script>
 	    <script type="text/javascript" src="pl-calendar.js?r=180720172015"></script>
-	    <script type="text/javascript" src="playlist.model.js?r=010220181921"></script>	
+	    <script type="text/javascript" src="playlist.model.js?r=170520181650"></script>	
 	</body>
 </html>
