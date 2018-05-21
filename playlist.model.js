@@ -145,31 +145,29 @@
    }
 };
 */
+Vue.component('playlist', {
+	props: ['list'],
+	template : `
+	<div><sublist v-bind:list="list" v-bind:score="47" v-bind:title="'A-List'"></sublist>
+	<sublist v-bind:list="list" v-bind:score="28" v-bind:title="'B-List'"></sublist>
+	<sublist v-bind:list="list" v-bind:score="23" v-bind:title="'C-List'"></sublist></div>`
+});
 
-Vue.component('items-list', {
+
+Vue.component('sublist', {
 	props : ['title', 'list', 'score'],
 	template : `<div>
 					<div class="list-title">{{title}}</div>
-					<list-item v-for="item in list" v-if="item.score == score" v-bind:item="item"></list-item>
+					<song v-for="item in list" v-if="item.score == score" v-bind:item="item" v-bind:mode="'main'"></song>
 				</div>`
 });
 
-Vue.component('list-item', {
-	props : ['item'],
+Vue.component('song', {
+	props : ['item', 'mode', 'num'],
 	template: `<div class="list-item">
-	<div v-bind:class="['item-info', item.item_class ? item.item_class : '']"></div>
-	<div class="item-main item-mr">
-		<div class="artist" v-html="item.artist"></div>
-		<div class="song" v-html="item.title"></div>
-	</div>
-</div>`
-});
-
-Vue.component('top-list-item', {
-	props : ['item', 'num', 'mode'],
-	template : `<div class="list-item">
-	<div class="item-info top100">{{num + 1}}</div>
-	<div class="item-main">
+	<div v-if="mode=='main'" v-bind:class="['item-info', item.item_class ? item.item_class : '']"></div>
+	<div v-if="mode!='main'" class="item-info top100">{{num + 1}}</div>
+	<div v-bind:class="['item-main', mode=='main'? 'item-mr' : '']">
 		<div class="artist" v-html="item.artist"></div>
 		<div class="song" v-html="item.title"></div>
 	</div>
@@ -178,6 +176,20 @@ Vue.component('top-list-item', {
 	<div class="item-info top100" v-if="mode=='top10artists'">{{item.songs}}</div>
 </div>`
 });
+
+Vue.component('modal', {
+	template: '#modal-template',
+	props: ['show', 'confirmdelete', 'errortxt', 'actualdate', 'deletepassword'],
+	methods: {
+	  close: function () {
+		this.$emit('close');
+	  },
+	  deletePlaylist: function() {
+		this.$emit('delete', this.actualdate, this.deletepassword);
+		this.$emit('close');
+	  }
+	}
+  });
 
 var playlist_app = new Vue({
 	el : "#playlist-app",
@@ -196,7 +208,10 @@ var playlist_app = new Vue({
 		showLeftMenu : false,
 		mode : 'main',
 		years_array : [],
-		is_mobile : false	
+		is_mobile : false,
+		showModal : false,
+		errorTxt : false,
+		confirmDelete: false
 	},
 	created : function() {
 		 for (var y=this.top100year; y>=2007; y--)
@@ -209,9 +224,10 @@ var playlist_app = new Vue({
 			if (!this.storage[plDate]) {
 				this.loading = true;
 				this.remote("current", {current_date : plDate}, function(data) {
-					if (data.date) this.actual_date = data.date;
+					if (data.date) { this.actual_date = "", this.actual_date = data.date; }
 					if (data.list) this.setStorage(data.date, data.list);
 					if (!this.current_date) this.current_date = this.actual_date;
+					if (data.error) this.showError(data.error);
 					this.loading = false;
 				}.bind(this));
 				return [];
@@ -234,6 +250,7 @@ var playlist_app = new Vue({
 						if (this.top100year > this.years_array[0]) this.top100year--;
 						if (this.top100year < this.years_array[this.years_array.length - 1]) this.top100year++;
 					}
+					if (data.error) this.showError(data.error);
 					this.loading = false;
 				}.bind(this));
 				return [];
@@ -255,6 +272,7 @@ var playlist_app = new Vue({
 						if (this.top100year > this.years_array[0]) this.top100year--;
 						if (this.top100year < this.years_array[this.years_array.length - 1]) this.top100year++;
 					}
+					if (data.error) this.showError(data.error);
 					this.loading = false;
 				}.bind(this));
 				return [];
@@ -316,6 +334,7 @@ var playlist_app = new Vue({
 				this.current_date = data.date;
 			  }
 			  if (data.list) this.setStorage(data.date, data.list);
+			  if (data.error) this.showError(data.error);
 			}.bind(this));
 		},
 		latest : function() {
@@ -329,9 +348,10 @@ var playlist_app = new Vue({
 				this.latest_date = data.date;
 			  }
 			  if (data.list) this.setStorage(data.date, data.list);
+			  if (data.error) this.showError(data.error);
 			}.bind(this));
 		},
-		archive: function(e) { console.log('e', e);
+		archive: function(e) {
 			this.$refs.picker.open(e);
 		},
 		next : function() {
@@ -343,6 +363,7 @@ var playlist_app = new Vue({
 					else this.remote("next", {pl_date : this.actualDate}, function(data) {
 					  if (data.date) this.actual_date = data.date;
 					  if (data.list) this.setStorage(data.date, data.list);
+					  if (data.error) this.showError(data.error);
 					}.bind(this));
 					break;
 				 case "top100":
@@ -359,6 +380,7 @@ var playlist_app = new Vue({
 					else this.remote("prev", {pl_date : this.actualDate}, function(data) {
 					  if (data.date) this.actual_date = data.date;
 					  if (data.list) this.setStorage(data.date, data.list);
+					  if (data.error) this.showError(data.error);
 					}.bind(this));
 					break;
 			   case "top100":
@@ -402,25 +424,31 @@ var playlist_app = new Vue({
 				$.post(this.upload_server, { data: result, name: fileName }, function(data) {
 					console.log('response data', data);
 					data = JSON.parse(data);
-					if (data.status == "ok" && data.pl_date) { this.update_data(data.pl_date); this.actual_date = data.pl_date; }
+					if (data.status == "ok" && data.pl_date) { console.log('update data'); this.update_data(data.pl_date); this.actual_date = data.pl_date; }
 					else if (data.status == "error") this.showError(data.error);
 					else this.showError("Error uploading playlist");
 			}.bind(this));
 			}.bind(this);
 		},
-		update_data : function(date) {
+		update_data : function(date) { console.log("update data");
 			if (moment(date, "YYYY-MM-DD").unix() > moment(this.latest_date, "YYYY-MM-DD").unix()) this.latest_date = date;
 			if (moment(date, "YYYY-MM-DD").unix() <= moment().unix()) this.current_date = date;
 			if (this.top100_storage[moment(date, "YYYY-MM-DD").format("YYYY")]) delete this.top100_storage[moment(date, "YYYY-MM-DD").format("YYYY")];
 			if (this.top10_storage[moment(date, "YYYY-MM-DD").format("YYYY")]) delete this.top10_storage[moment(date, "YYYY-MM-DD").format("YYYY")];
 		},
-		delete_playlist : function(pl_date, password) {
-			this.remote("delete", { pl_date : pl_date, password : password }, function(data) {
-				if (data.ok && this.storage[pl_date]) {
-					delete this.storage[pl_date];
-					if (this.top100_storage[moment(pl_date, "YYYY-MM-DD").format("YYYY")]) delete this.top100_storage[moment(pl_date, "YYYY-MM-DD").format("YYYY")];
-					if (this.top10_storage[moment(pl_date, "YYYY-MM-DD").format("YYYY")]) delete this.top10_storage[moment(pl_date, "YYYY-MM-DD").format("YYYY")];
+		confirm_delete: function() {
+			this.confirmDelete = true;
+		},
+		delete_playlist : function(plDate, pass) {
+			this.remote("delete", { pl_date : plDate, password : pass }, function(data) {
+				if (data.ok) {
+					if (this.storage[plDate]) delete this.storage[plDate];
+					if (this.top100_storage[moment(plDate, "YYYY-MM-DD").format("YYYY")]) delete this.top100_storage[moment(plDate, "YYYY-MM-DD").format("YYYY")];
+					if (this.top10_storage[moment(plDate, "YYYY-MM-DD").format("YYYY")]) delete this.top10_storage[moment(plDate, "YYYY-MM-DD").format("YYYY")];
+					this.latest();
 				}
+				else if (data.error) this.showError(data.error);
+				else this.showError("Error deleting playlist"); 
 			}.bind(this));
 		},
 		prev_date : function(date) {
@@ -455,8 +483,8 @@ var playlist_app = new Vue({
 	   toggleLeftMenu : function() {
 		this.showLeftMenu = !this.showLeftMenu;
 	   },
-	   showError : function() {
-		   
+	   showError : function(error) {
+		   this.errorTxt = error; 
 	   }
 	}
 });

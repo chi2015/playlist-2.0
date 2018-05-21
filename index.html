@@ -4,7 +4,8 @@
     	<link rel="stylesheet" type="text/css" href="playlist2.css?r=010220182120" />
     	<link rel="stylesheet" type="text/css" href="pl-calendar.css?r=310720172120" />
     	<link rel="stylesheet" type="text/css" href="sweetalert2.min.css" />
-    	<link rel="stylesheet" type="text/css" href="vue-datetime.css" />
+		<link rel="stylesheet" type="text/css" href="vue-datetime.css" />
+		<link rel="stylesheet" type="text/css" href="modal.css" />
     	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     	<link rel="icon" href="pl-favicon.png" type="image/png"/>
     </head>
@@ -20,7 +21,7 @@
 				<div class="lm-item menu-item" v-on:click="openfile()">Add</div>
 				<div class="lm-item menu-item" v-on:click="top100()">Top 100</div>
 				<div class="lm-item menu-item" v-on:click="top10artists()">Top 10 Artists</div>
-				<div class="lm-item menu-item delete-menu-item" onclick="playlist.view.show_delete_dialog()">Delete</div>
+				<div class="lm-item menu-item delete-menu-item" v-on:click="confirm_delete()">Delete</div>
 			</div>
 			<div class="date-block">
 				<div class="pl-prev menu-item" v-on:click="move('left')"></div>
@@ -35,26 +36,62 @@
 			<div class="pl-upload menu-item" title="Add playlist" v-on:click="openfile()"></div>
 	     </div>
 	     <div id="playlist-content" class="list" v-bind:class="{ list : true, 'pl-loading' : loading}">
-			<template v-if="!loading && playlist.length && mode == 'main'">
-				<items-list v-bind:list="playlist" v-bind:score="47" v-bind:title="'A-List'"></items-list>
-				<items-list v-bind:list="playlist" v-bind:score="28" v-bind:title="'B-List'"></items-list>
-				<items-list v-bind:list="playlist" v-bind:score="23" v-bind:title="'C-List'"></items-list>
-			</template>
-			<top-list-item v-if="mode == 'top100' && !loading && top100data.length" 
+			<playlist v-if="!loading && playlist.length && mode == 'main'" v-bind:list="playlist"></playlist>
+			<song v-if="mode == 'top100' && !loading && top100data.length" 
 						   v-for="(item, index) in top100data" 
 						   v-bind:item="item" 
 						   v-bind:num="index" 
 						   v-bind:mode="mode">
-			</top-list-item>
-			<top-list-item v-if="mode == 'top10artists' && !loading && top10data.length" 
+		 	</song>
+			<song v-if="mode == 'top10artists' && !loading && top10data.length" 
 						   v-for="(item, index) in top10data" 
 						   v-bind:item="item" 
 						   v-bind:num="index" 
 						   v-bind:mode="mode">
-			</top-list-item>
+			</song>
 	     </div>
-	     <input type="file" id="pl_file" style="display:none;" v-on:change="changefile()" ref="pl_file"/>
-	    </div>
+		 <input type="file" id="pl_file" style="display:none;" v-on:change="changefile()" ref="pl_file"/>
+			<modal :show="confirmDelete || errorTxt" 
+					:confirmdelete="confirmDelete" 
+					:errortxt="errorTxt" 
+					:actualdate="actualDate"
+					:deletepassword="''"
+					@close="showModal = false; errorTxt = false; confirmDelete = false"
+					@delete="delete_playlist">
+			</modal>
+		</div>
+		
+		<script type="x/template" id="modal-template">
+			<transition name="modal">
+				<div class="modal-mask" @click="close" v-show="show">
+					<div class="modal-container" @click.stop>
+						<div class="modal-header">
+							<h3 v-show="confirmdelete">Delete playlist</h3>
+							<h3 v-show="errortxt">Error</h3>
+						</div>
+						<div class="modal-body">
+							<span v-show="errortxt">{{errortxt}}</span>
+							<span v-show="confirmdelete">Are you sure you want to delete playlist dated {{actualdate}}?</span>
+							<label class="form-label" v-if="confirmdelete">
+								Enter password to delete:
+								<input class="form-control" v-model="deletepassword">
+							</label>
+						</div>
+						<div class="modal-footer text-right">
+							<button v-show="errortxt" class="modal-default-button" @click="close()">
+								OK
+							</button>
+							<button v-show="confirmdelete" class="modal-default-button" @click="deletePlaylist()">
+								Delete
+							</button>
+							<button v-show="confirmdelete" class="modal-default-button" @click="close()">
+								Cancel
+							</button>
+						</div>
+					</div>
+				</div>
+			</transition>
+		</script>
 	    
 	    <script type="text/javascript" src="vue-2.5.13.js"></script>
 	    <script type="text/javascript" src="luxon.min.js"></script>
