@@ -403,6 +403,10 @@ input#pl_date, select#pl_year {
 		font-size: 26px;
 		padding: 7px;
 	}
+
+	select#pl_year {
+		margin-right: 7px;
+	}
 }
 
 @media screen and (max-width: 800px) {

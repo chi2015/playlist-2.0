@@ -27,7 +27,7 @@
 				<select id="pl_year" v-if="mode == 'top100' || mode == 'top10artists'" v-model="top100year">
 					<option v-for="year in years_array" :value="year">{{year}}</option>
 				</select>
-				<div class="pl-calendar menu-item" v-on:click="archive"></div>
+				<div class="pl-calendar menu-item" v-if="mode == 'main'" v-on:click="archive"></div>
 				<div class="pl-next menu-item" v-on:click="move('right')"></div>
 			</div>
 			<div class="pl-upload menu-item" title="Add playlist" v-on:click="openfile()"></div>
