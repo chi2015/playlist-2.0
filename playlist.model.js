@@ -147,34 +147,18 @@
 */
 Vue.component('playlist', {
 	props: ['list'],
-	template : `
-	<div><sublist v-bind:list="list" v-bind:score="47" v-bind:title="'A-List'"></sublist>
-	<sublist v-bind:list="list" v-bind:score="28" v-bind:title="'B-List'"></sublist>
-	<sublist v-bind:list="list" v-bind:score="23" v-bind:title="'C-List'"></sublist></div>`
+	template : '#playlist'
 });
 
 
 Vue.component('sublist', {
 	props : ['title', 'list', 'score'],
-	template : `<div>
-					<div class="list-title">{{title}}</div>
-					<song v-for="item in list" v-if="item.score == score" v-bind:item="item" v-bind:mode="'main'"></song>
-				</div>`
+	template : '#sublist'
 });
 
 Vue.component('song', {
 	props : ['item', 'mode', 'num'],
-	template: `<div class="list-item">
-	<div v-if="mode=='main'" v-bind:class="['item-info', item.item_class ? item.item_class : '']"></div>
-	<div v-if="mode!='main'" class="item-info top100">{{num + 1}}</div>
-	<div v-bind:class="['item-main', mode=='main'? 'item-mr' : '']">
-		<div class="artist" v-html="item.artist"></div>
-		<div class="song" v-html="item.title"></div>
-	</div>
-	<div class="item-info total" v-if="mode=='top100'">{{item.total}}</div>
-	<div class="item-info total" v-if="mode=='top10artists'">{{item.artist_total}}</div>
-	<div class="item-info top100" v-if="mode=='top10artists'">{{item.songs}}</div>
-</div>`
+	template: '#song'
 });
 
 Vue.component('modal', {
@@ -314,6 +298,7 @@ var playlist_app = new Vue({
 			this.loading = true;
 			params = params || {};
 			params.action = action;
+			
 			$.post(this.playlist_server, params, function(data) {
 				console.log(data);
 				data = JSON.parse(data);
