@@ -52,7 +52,7 @@ var playlist_app = new Vue({
 		dragover : false
 	},
 	created : function() {
-		 for (var y=this.top100year; y>=2007; y--)
+		 for (var y=this.top100year+1; y>=2007; y--)
 			this.years_array.push(y);
 	},
 	computed: {
@@ -167,9 +167,6 @@ var playlist_app = new Vue({
 				  if (files.length > 0) self.upload_file(files[0]);
 			  }
 			  
-		},
-		handleDragAndDrop : function() {
-
 		},
 		remote : function(action, params, cb) {
 			//console.log("remote request", action, params);
