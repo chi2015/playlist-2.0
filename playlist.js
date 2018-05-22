@@ -48,7 +48,8 @@ var playlist_app = new Vue({
 		is_mobile : false,
 		showModal : false,
 		errorTxt : false,
-		confirmDelete: false
+		confirmDelete: false,
+		dragover : false
 	},
 	created : function() {
 		 for (var y=this.top100year; y>=2007; y--)
@@ -123,20 +124,52 @@ var playlist_app = new Vue({
 		}
 	},
 	mounted : function() {
-		window.addEventListener('resize', this.handleResize);
-		this.handleResize();
-   	   
-   	   window.addEventListener('resize', this.handleResize);
-   	   this.showLeftMenu = !this.is_mobile;
-   	   window.addEventListener("drop",function(e){
-		  e = e || event;
-		  e.preventDefault();
-		},false);
-   	   
+	  window.addEventListener('resize', this.handleResize);
+	  this.handleResize();
+	  this.showLeftMenu = !this.is_mobile;
+	  this.initDragAndDropEvents();
 	},
 	methods : {
 		handleResize : function() {
 			this.is_mobile = $(window).width() < 800;
+		},
+		initDragAndDropEvents : function() {
+			let playlistContent = document.getElementById('playlist-content');
+			let self = this;
+			['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+				playlistContent.addEventListener(eventName, preventDefaults, false);
+			  })
+			  function preventDefaults (e) {
+				e.preventDefault();
+				e.stopPropagation();
+			  }
+			
+			  ['dragenter', 'dragover'].forEach(eventName => {
+				playlistContent.addEventListener(eventName, highlight, false);
+			  })
+			  ;['dragleave', 'drop'].forEach(eventName => {
+				playlistContent.addEventListener(eventName, unhighlight, false);
+			  })
+			  function highlight(e) {
+				playlistContent.classList.add('pl-dragover-new');
+				self.dragover = true;
+			  }
+			  function unhighlight(e) {
+				playlistContent.classList.remove('pl-dragover-new');
+				self.dragover = false;
+			  }
+
+			  playlistContent.addEventListener('drop', handleDrop, false);
+
+			  function handleDrop(e) {
+				  let dt = e.dataTransfer;
+				  let files = dt.files;
+				  if (files.length > 0) self.upload_file(files[0]);
+			  }
+			  
+		},
+		handleDragAndDrop : function() {
+
 		},
 		remote : function(action, params, cb) {
 			//console.log("remote request", action, params);

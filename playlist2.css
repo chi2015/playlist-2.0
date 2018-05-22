@@ -27,8 +27,11 @@ body {
 	background-color: #333333;
 }
 
+#playlist-content {
+	position: relative;
+}
+
 .pl-dragover {
-	background-color: rgba(85,85,85,0.5);
 	position: absolute;
 	left: 0;
 	top: 0;
@@ -42,6 +45,10 @@ body {
 .pl-dragover:before {
 	content: "Drop playlist file to upload";
 	position: fixed;
+}
+
+.pl-dragover-new {
+	opacity: 0.5;
 }
 
 .header-title {

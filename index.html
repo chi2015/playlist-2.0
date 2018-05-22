@@ -33,6 +33,7 @@
 			<div class="pl-upload menu-item" title="Add playlist" v-on:click="openfile()"></div>
 	     </div>
 	     <div id="playlist-content" class="list" v-bind:class="{ list : true, 'pl-loading' : loading}">
+			<div v-if="dragover" class="pl-dragover"></div> 
 			<playlist v-if="!loading && playlist.length && mode == 'main'" v-bind:list="playlist"></playlist>
 			<song v-if="mode == 'top100' && !loading && top100data.length" 
 						   v-for="(item, index) in top100data" 
