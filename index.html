@@ -34,15 +34,15 @@
 	     </div>
 	     <div id="playlist-content" class="list" v-bind:class="{ list : true, 'pl-loading' : loading}">
 			<div v-if="dragover" class="pl-dragover"></div> 
-			<playlist v-if="!loading && playlist.length && mode == 'main'" v-bind:list="playlist"></playlist>
-			<song v-if="mode == 'top100' && !loading && top100data.length" 
-						   v-for="(item, index) in top100data" 
+			<playlist v-if="!loading && storage[actualDate] && storage[actualDate].length && mode == 'main'" v-bind:list="storage[actualDate]"></playlist>
+			<song v-if="mode == 'top100' && !loading && top100_storage[top100year] && top100_storage[top100year].length" 
+						   v-for="(item, index) in top100_storage[top100year]" 
 						   v-bind:item="item" 
 						   v-bind:num="index" 
 						   v-bind:mode="mode">
-		 	</song>
-			<song v-if="mode == 'top10artists' && !loading && top10data.length" 
-						   v-for="(item, index) in top10data" 
+			</song>
+			<song v-if="mode == 'top10artists' && !loading && top10_storage[top100year] && top10_storage[top100year].length" 
+						   v-for="(item, index) in top10_storage[top100year]" 
 						   v-bind:item="item" 
 						   v-bind:num="index" 
 						   v-bind:mode="mode">

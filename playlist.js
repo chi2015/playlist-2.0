@@ -33,7 +33,7 @@ var playlist_app = new Vue({
 	data : {
 		playlist_server : "http://chi2016.ru/playlist/server/playlist.php",
 		upload_server : "http://chi2016.ru/playlist/server/upload.php",
-		actual_date : moment().format('YYYY-MM-DD'),
+		actual_date : false,
 		latest_date : false,
 		current_date : false,
 		top100year : +moment().format('YYYY') - 1,
@@ -51,74 +51,32 @@ var playlist_app = new Vue({
 		confirmDelete: false,
 		dragover : false
 	},
-	created : function() {
-		 for (var y=this.top100year+1; y>=2007; y--)
-			this.years_array.push(y);
-	},
-	computed: {
-		playlist : function() {
-			var plDate = this.actual_date.substring(0,10);
-			console.log('playlist date', plDate, this.storage);
-			if (!this.storage[plDate]) {
+	watch : {
+		actual_date : function() {
+			if (!this.storage[this.actualDate]) {
 				this.loading = true;
-				this.remote("current", {current_date : plDate}, function(data) {
+				this.remote("current", {current_date : this.actualDate}, function(data) {
 					if (data.date) { this.actual_date = "", this.actual_date = data.date; }
 					if (data.list) this.setStorage(data.date, data.list);
 					if (!this.current_date) this.current_date = this.actual_date;
 					if (data.error) this.showError(data.error);
 					this.loading = false;
 				}.bind(this));
-				return [];
-			};
-			
-			return this.storage[plDate];
-		},
-		
-		top100data : function() { console.log(this.top100year);
-			
-			if (this.mode!="top100") return [];
-			
-			if (!this.top100_storage[this.top100year])
-			{
-				this.loading = true;
-				this.remote("top100", {year : this.top100year }, function(data) {
-					if (data.year) { this.top100year = ""; this.top100year = data.year; }
-					if (data.list) this.top100_storage[this.top100year] = data.list;
-					if (data.error) { 
-						if (this.top100year > this.years_array[0]) this.top100year--;
-						if (this.top100year < this.years_array[this.years_array.length - 1]) this.top100year++;
-					}
-					if (data.error) this.showError(data.error);
-					this.loading = false;
-				}.bind(this));
-				return [];
 			}
-			
-			return this.top100_storage[this.top100year];
 		},
-		
-		top10data : function() {
-			if (this.mode!="top10artists") return [];
-			
-			if (!this.top10_storage[this.top100year])
-			{
-				this.loading = true;
-				this.remote("top10artists", {year : this.top100year }, function(data) {
-					if (data.year) { this.top100year = ""; this.top100year = data.year; }
-					if (data.list) this.top10_storage[this.top100year] = data.list;
-					if (data.error) { 
-						if (this.top100year > this.years_array[0]) this.top100year--;
-						if (this.top100year < this.years_array[this.years_array.length - 1]) this.top100year++;
-					}
-					if (data.error) this.showError(data.error);
-					this.loading = false;
-				}.bind(this));
-				return [];
-			}
-			
-			return this.top10_storage[this.top100year];
+		top100year : function() {
+			this.checkTopStorage();
 		},
-		
+		mode : function() {
+			if (this.mode!="main") this.checkTopStorage();
+		}
+	},
+	created : function() {
+		 for (var y=this.current_year+1; y>=2007; y--)
+			this.years_array.push(y);
+		this.actual_date = moment().format('YYYY-MM-DD');
+	},
+	computed: {		
 		actualDate : function() {
 			return this.actual_date.substring(0,10);
 		}
@@ -181,6 +139,24 @@ var playlist_app = new Vue({
 				this.loading = false;
 				cb(data);
 			}.bind(this));
+		},
+		checkTopStorage : function() {
+			var data_storage;
+			if (this.mode=="top100") data_storage = this.top100_storage;
+			if (this.mode=="top10artists") data_storage = this.top10_storage;
+			if (!data_storage[this.top100year]) {
+				this.loading = true;
+				this.remote(this.mode, {year : this.top100year }, function(data) {
+					if (data.year) { this.top100year = ""; this.top100year = data.year; }
+					if (data.list) data_storage[this.top100year] = data.list;
+					if (data.error) { 
+						if (this.top100year > this.years_array[0]) this.top100year--;
+						if (this.top100year < this.years_array[this.years_array.length - 1]) this.top100year++;
+					}
+					if (data.error) this.showError(data.error);
+					this.loading = false;
+				}.bind(this));
+			}
 		},
 		current : function() {
 			this.mode = 'main';
