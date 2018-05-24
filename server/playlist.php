@@ -1,7 +1,9 @@
 <?php
   header('Access-Control-Allow-Origin: *');
+  header('Access-Control-Allow-Headers: Content-Type');
   include_once("db.func.php");
-  $req = $_POST;
+  $postData = file_get_contents('php://input');
+  $req = json_decode($postData, true);
   $response = getResponse($req);
   echo json_encode($response);
     

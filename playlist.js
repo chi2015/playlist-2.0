@@ -53,7 +53,7 @@ var playlist_app = new Vue({
 	},
 	watch : {
 		actual_date : function() {
-			if (!this.storage[this.actualDate]) {
+			if (!this.storage[this.actualDate]) { 
 				this.loading = true;
 				this.remote("current", {current_date : this.actualDate}, function(data) {
 					if (data.date) { this.actual_date = "", this.actual_date = data.date; }
@@ -131,14 +131,21 @@ var playlist_app = new Vue({
 			this.loading = true;
 			params = params || {};
 			params.action = action;
-			
-			$.post(this.playlist_server, params, function(data) {
-				console.log(data);
-				data = JSON.parse(data);
-				console.log("remote response", data);
+			console.log("req body", JSON.stringify(params));
+			fetch(this.playlist_server,
+			{
+				method: "POST",
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(params)
+			})
+			.then((res) => { return res.json(); })
+			.then((data) => { console.log( "FETCH remote response", data  );
 				this.loading = false;
 				cb(data);
-			}.bind(this));
+			});
 		},
 		checkTopStorage : function() {
 			var data_storage;
