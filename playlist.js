@@ -243,6 +243,10 @@ var playlist_app = new Vue({
 			this.upload_file(file);
 		},
 		upload_file: function(file) {
+			if (file.size > 5120) {
+				this.showError("Playlist file size cannot be more than 5KB");
+				return;
+			}
 			var reader = new FileReader();
 			reader.readAsText(file, 'UTF-8');
 			reader.onload = function(event) {

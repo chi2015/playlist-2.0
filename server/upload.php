@@ -6,6 +6,12 @@
   if (!is_dir("uploads")) mkdir("uploads");
   
   $data = $_POST['data'];
+
+  if (strlen($data) > 5120) {
+    echo json_encode(["status" => "error", "error" => "Playlist file size cannot be more than 5KB"]);
+    die();
+  }
+
   $fileName = $_POST['name'];
   $dataFile = 'uploads/'.$fileName;
   
@@ -14,6 +20,7 @@
   fclose($fp);
   
   $loaded_playlist = loadPlaylistFromFile($dataFile);
+  unlink($dataFile);
   
   if (isset($loaded_playlist["error"])) {
   	echo json_encode(["status" => "error", "error" => $loaded_playlist["error"]]);
@@ -22,8 +29,6 @@
   
   $prepared_playlist = preparePlaylistToInsert($loaded_playlist);
   $pl_date = $loaded_playlist["pl_date"];
-  
-  unlink($dataFile);
   
   $ins_res = insert_playlist($prepared_playlist, $pl_date);
   
