@@ -3,7 +3,6 @@ Vue.component('playlist', {
 	template : '#playlist'
 });
 
-
 Vue.component('sublist', {
 	props : ['title', 'list', 'score'],
 	template : '#sublist'
@@ -127,7 +126,6 @@ var playlist_app = new Vue({
 			  
 		},
 		remote : function(action, params, cb) {
-			//console.log("remote request", action, params);
 			this.loading = true;
 			params = params || {};
 			params.action = action;
@@ -165,6 +163,11 @@ var playlist_app = new Vue({
 				}.bind(this));
 			}
 		},
+		setPlaylistData : function(data) {
+			if (data.date) this.actual_date = data.date;
+			if (data.list) this.setStorage(data.date, data.list);
+			if (data.error) this.showError(data.error);
+		},
 		current : function() {
 			this.mode = 'main';
 			if (this.storage[this.current_date]) 
@@ -172,12 +175,8 @@ var playlist_app = new Vue({
 				this.actual_date = this.current_date;
 			}
 			else this.remote("current", {}, function(data) {
-			  if (data.date) {
-				this.actual_date = data.date;
-				this.current_date = data.date;
-			  }
-			  if (data.list) this.setStorage(data.date, data.list);
-			  if (data.error) this.showError(data.error);
+			  this.setPlaylistData(data);
+			  if (data.date) this.current_date = data.date;
 			}.bind(this));
 		},
 		latest : function() {
@@ -186,50 +185,35 @@ var playlist_app = new Vue({
 				this.actual_date = this.latest_date;
 			}
 			else this.remote("latest", {}, function(data) {
-			  if (data.date) {
-				this.actual_date = data.date;
-				this.latest_date = data.date;
-			  }
-			  if (data.list) this.setStorage(data.date, data.list);
-			  if (data.error) this.showError(data.error);
+			  this.setPlaylistData(data);
+			  if (data.date) this.latest_date = data.date;
 			}.bind(this));
 		},
 		archive: function(e) {
 			this.$refs.picker.open(e);
 		},
-		next : function() {
+		nextprev : function(is_next) {
+			var method = is_next ? "next" : "prev";
+			var nextprev_date = is_next ? this.next_date(this.actualDate) : this.prev_date(this.actualDate);
 			switch (this.mode) {
 				case "main":
-					if (this.storage[this.next_date(this.actualDate)]) {
-					this.actual_date = this.next_date(this.actualDate);
+					if (this.storage[nextprev_date]) {
+						this.actual_date = nextprev_date;
 					}
-					else this.remote("next", {pl_date : this.actualDate}, function(data) {
-					  if (data.date) this.actual_date = data.date;
-					  if (data.list) this.setStorage(data.date, data.list);
-					  if (data.error) this.showError(data.error);
+					else this.remote(method, {pl_date : this.actualDate}, function(data) {
+						this.setPlaylistData(data);
 					}.bind(this));
 					break;
 				 case "top100":
 			     case "top10artists":
-					this.top100year++; break;
+					if (is_next) this.top100year++; else this.top100year--; break;
 			}
 		},
+		next : function() {
+			this.nextprev(true);
+		},
 		prev : function() {
-		   switch (this.mode) {
-			   case "main":
-				   if (this.storage[this.prev_date(this.actualDate)]) {
-					this.actual_date = this.prev_date(this.actualDate);
-					}
-					else this.remote("prev", {pl_date : this.actualDate}, function(data) {
-					  if (data.date) this.actual_date = data.date;
-					  if (data.list) this.setStorage(data.date, data.list);
-					  if (data.error) this.showError(data.error);
-					}.bind(this));
-					break;
-			   case "top100":
-			   case "top10artists":
-					this.top100year--; break;
-		   }
+		   this.nextprev(false);
 		},
 		move : function(direction) {
 			var $pl_content = $('#playlist-content');
@@ -331,4 +315,3 @@ var playlist_app = new Vue({
 	   }
 	}
 });
-	         
