@@ -1,22 +1,25 @@
 <?php
   header('Access-Control-Allow-Origin: *');
+  header('Access-Control-Allow-Headers: Content-Type');
+
   include_once("db.func.php");
   include_once("func_read_playlist.php");
   
   if (!is_dir("uploads")) mkdir("uploads");
   
-  $data = $_POST['data'];
+  $postData = file_get_contents('php://input');
+  $data = json_decode($postData, true);
 
-  if (strlen($data) > 5120) {
+  if (strlen($data['data']) > 5120) {
     echo json_encode(["status" => "error", "error" => "Playlist file size cannot be more than 5KB"]);
     die();
   }
 
-  $fileName = $_POST['name'];
-  $dataFile = 'uploads/'.$fileName;
+  $fileName = $data['name'];
+  $dataFile = 'uploads/'.$data['name'];
   
   $fp = fopen($dataFile,'w');
-  fwrite($fp, $data);
+  fwrite($fp, $data['data']);
   fclose($fp);
   
   $loaded_playlist = loadPlaylistFromFile($dataFile);

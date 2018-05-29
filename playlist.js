@@ -252,13 +252,27 @@ var playlist_app = new Vue({
 			reader.onload = function(event) {
 				var result = event.target.result;
 				var fileName = file.name; 
-				$.post(this.upload_server, { data: result, name: fileName }, function(data) {
-					console.log('response data', data);
-					data = JSON.parse(data);
-					if (data.status == "ok" && data.pl_date) { console.log('update data'); this.update_data(data.pl_date); this.actual_date = data.pl_date; }
-					else if (data.status == "error") this.showError(data.error);
-					else this.showError("Error uploading playlist");
-			}.bind(this));
+				
+				fetch(this.upload_server,
+					{
+						method: "POST",
+						headers: {
+							'Accept': 'application/json',
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify({ data: result, name: fileName })
+					})
+					.then((res) => { return res.json(); })
+					.then((data) => { console.log( "FETCH remote response", data  );
+						if (data.status == "ok" && data.pl_date) { 
+							console.log('update data'); 
+							this.update_data(data.pl_date); 
+							this.actual_date = data.pl_date; 
+						}
+						else if (data.status == "error") this.showError(data.error);
+						else this.showError("Error uploading playlist");
+				});
+
 			}.bind(this);
 		},
 		update_data : function(date) { console.log("update data");
