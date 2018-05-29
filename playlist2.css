@@ -31,6 +31,18 @@ body {
 	position: relative;
 }
 
+#playlist-content.moveleft {
+	transform:translateX(1263px);
+}
+
+#playlist-content.moveright {
+	transform:translateX(-1263px);
+}
+
+#playlist-content.moveleft, #playlist-content.moveright {
+	transition-duration: 300ms;
+}
+
 .pl-dragover {
 	position: absolute;
 	left: 0;

@@ -48,7 +48,9 @@ var playlist_app = new Vue({
 		showModal : false,
 		errorTxt : false,
 		confirmDelete: false,
-		dragover : false
+		dragover : false,
+		xDown : false,
+		yDown : false
 	},
 	watch : {
 		actual_date : function() {
@@ -85,10 +87,11 @@ var playlist_app = new Vue({
 	  this.handleResize();
 	  this.showLeftMenu = !this.is_mobile;
 	  this.initDragAndDropEvents();
+	  this.initTouchEvents();
 	},
 	methods : {
 		handleResize : function() {
-			this.is_mobile = $(window).width() < 800;
+			this.is_mobile = window.innerWidth < 800;
 		},
 		initDragAndDropEvents : function() {
 			let playlistContent = document.getElementById('playlist-content');
@@ -124,6 +127,26 @@ var playlist_app = new Vue({
 				  if (files.length > 0) self.upload_file(files[0]);
 			  }
 			  
+		},
+		initTouchEvents : function() {
+			let playlistContent = document.getElementById('playlist-content');
+			playlistContent.addEventListener('touchstart', (e) => { 
+				this.xDown = e.touches[0].clientX;
+				this.yDown = e.touches[0].clientY;
+			});
+			playlistContent.addEventListener('touchmove', (e) => {
+				if (!this.xDown || !this.yDown) return;
+				let xUp = e.touches[0].clientX;
+				let yUp = e.touches[0].clientY;
+				let xDiff = this.xDown - xUp;
+				let yDiff = this.yDown - yUp;
+
+				if (Math.abs(xDiff) > Math.abs(yDiff)) {
+					if (xDiff > 0) this.move('right'); else this.move('left');
+				}
+				this.xDown = false;
+				this.yDown = false;
+			});
 		},
 		remote : function(action, params, cb) {
 			this.loading = true;
@@ -216,18 +239,13 @@ var playlist_app = new Vue({
 		   this.nextprev(false);
 		},
 		move : function(direction) {
-			var $pl_content = $('#playlist-content');
-			var k = direction == "right" ? -1 : 1;
-			var old_pos = { top: $pl_content.offset().top, left : $pl_content.offset().left };
-			$pl_content.css({position: 'absolute', top: $pl_content.offset().top, left:$pl_content.offset().left });
-			$pl_content.animate({
-   	   		left: k * $(window).width()
-   	   }, 300, function() { 
-		   $pl_content.css({ position: 'relative', top : 0, left : 0}); 
-		   if (direction == 'left') this.prev();
-		   if (direction == 'right') this.next();
-		   }.bind(this));
-		
+			var pl_content = document.getElementById('playlist-content');
+			pl_content.classList.add('move'+direction);
+			setTimeout(() => { 
+				pl_content.classList.remove('move'+direction) 
+				if (direction == 'left') this.prev();
+				if (direction == 'right') this.next();
+			}, 300);
 		},
 		top100 : function() {
 			this.mode = 'top100';
@@ -236,7 +254,7 @@ var playlist_app = new Vue({
 			this.mode = 'top10artists';
 		},
 		openfile : function() {
-			$('#pl_file').click();
+			document.getElementById('pl_file').click();
 		},
 		changefile : function() {
 			var file = this.$refs.pl_file.files[0];
