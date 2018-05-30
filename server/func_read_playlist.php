@@ -104,6 +104,93 @@ function getPlaylistBlock(&$handle, $block_size)
 					"is_new" => $is_new );
 }
 
+function loadPlaylistFromData($data) {
+	
+	$data_arr = explode(PHP_EOL, $data);
+
+	$i = 0;
+	$alist = [];
+	$blist = [];
+	$clist = [];
+	$pl_date = "";
+	$res_playlist = [];
+
+	$str = $data_arr[$i];
+	if (substr_count($str,"Playlist")<=0) return ["error" => "Error file format".$i];
+	$i++;
+	
+	while ($i < count($data_arr)) {
+		$str = trim($data_arr[$i], "\r");
+		if (substr_count($str,"Updated")>0) $pl_date = getPlaylistDate($str);
+		else if (substr_count($str,"A-List")>0) {
+			$alist = getPlaylistBlock_new($data_arr, $i, 9);
+			if (isset($alist["error"])) return ["error" => "At least on song in file is incorrect format: ".$alist["error"]];
+		}
+		else if (substr_count($str,"B-List")>0) {
+			$blist = getPlaylistBlock_new($data_arr, $i, 10);
+			if (isset($blist["error"])) return ["error" => "At least on song in file is incorrect format: ".$blist["error"]];
+		}
+		else if (substr_count($str,"C-List")>0) {
+			$clist = getPlaylistBlock_new($data_arr, $i, 6);
+			if (isset($clist["error"])) return ["error" => "At least on song in file is incorrect format: ".$clist["error"]];
+		}
+		else return ["error" => "Error file format".$i];
+		$i++;
+	}
+
+	$res_playlist = [
+		"pl_date" => $pl_date,
+		 "alist_artist" => $alist["artist"],
+		 "blist_artist" => $blist["artist"],
+		 "clist_artist" => $clist["artist"],
+		 "alist_title" => $alist["title"],
+		 "blist_title" => $blist["title"],
+		 "clist_title" => $clist["title"],
+		 "alist_is_new" => $alist["is_new"],
+		  "blist_is_new" => $blist["is_new"],
+		   "clist_is_new" => $clist["is_new"],
+
+	];
+
+	return $res_playlist;
+}
+
+function getPlaylistBlock_new($data_arr, &$i, $block_size) {
+	$i+=2;
+	for ($j=0; $j<$block_size; $j++)
+		{
+			$str = trim($data_arr[$i], "\r");
+			$is_new[$j] = 0;
+
+			if (substr($str, 0, 1) == "*")
+			{				$str = str_replace("*","",$str);
+				$is_new[$j] = 1;
+			}
+
+			$str = preg_replace("/(.+)\s(feat\.\s.+)(\s-\s.+)/","\\1\\3 (\\2)",$str);
+			$artist_title = explode(" - ",$str);
+			if (count($artist_title) < 2) return ["error" => $str];
+			$artist[$j] = $artist_title[0];
+			$title[$j] = $artist_title[1];
+			if (substr_count($title[$j],"/")>0 )
+			{
+				$titles = explode("/",$clist_title[$j]);
+				for ($k=0; $j<count($titles); $k++)
+				{
+					$artist[$j+$k] = $artist_title[0];
+					$title[$j+$k] = $titles[$k];
+
+				}
+				$j+=count($titles)-1;
+			}
+			$i++;
+		}
+
+		return ["artist" => $artist,
+					"title" => $title,
+					"is_new" => $is_new ];
+}
+
 function preparePlaylistToInsert($playlist_arr)
 {	global $alist_score, $blist_score, $clist_score;
 

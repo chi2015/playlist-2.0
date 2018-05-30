@@ -5,8 +5,6 @@
   include_once("db.func.php");
   include_once("func_read_playlist.php");
   
-  if (!is_dir("uploads")) mkdir("uploads");
-  
   $postData = file_get_contents('php://input');
   $data = json_decode($postData, true);
 
@@ -14,17 +12,9 @@
     echo json_encode(["status" => "error", "error" => "Playlist file size cannot be more than 5KB"]);
     die();
   }
-
-  $fileName = $data['name'];
-  $dataFile = 'uploads/'.$data['name'];
   
-  $fp = fopen($dataFile,'w');
-  fwrite($fp, $data['data']);
-  fclose($fp);
-  
-  $loaded_playlist = loadPlaylistFromFile($dataFile);
-  unlink($dataFile);
-  
+  $loaded_playlist = loadPlaylistFromData($data['data']);
+    
   if (isset($loaded_playlist["error"])) {
   	echo json_encode(["status" => "error", "error" => $loaded_playlist["error"]]);
   	die();
