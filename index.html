@@ -1,7 +1,7 @@
 <html>
     <head>
     	<title>Playlist</title>
-    	<link rel="stylesheet" type="text/css" href="playlist2.css?r=290520181642" />
+    	<link rel="stylesheet" type="text/css" href="playlist2.css?r=040720181617" />
 		<link rel="stylesheet" type="text/css" href="vue-datetime.css" />
 		<link rel="stylesheet" type="text/css" href="modal.css" />
     	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -79,8 +79,8 @@
 				<div v-if="mode=='main'" v-bind:class="['item-info', item.item_class ? item.item_class : '']"></div>
 				<div v-if="mode!='main'" class="item-info top100">{{num + 1}}</div>
 				<div v-bind:class="['item-main', mode=='main'? 'item-mr' : '']">
-					<div class="artist" v-html="item.artist"></div>
 					<div class="song" v-html="item.title"></div>
+					<div class="artist" v-html="item.artist"></div>
 				</div>
 				<div class="item-info total" v-if="mode=='top100'">{{item.total}}</div>
 				<div class="item-info total" v-if="mode=='top10artists'">{{item.artist_total}}</div>
