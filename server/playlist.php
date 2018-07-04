@@ -19,7 +19,8 @@
     		case 'next': return isset($req['pl_date']) ? pl_next($req['pl_date']) : ['error' => 'No playlist date specified']; break;
     		case 'top100': return isset($req['year']) ? pl_top100($req['year']) : ['error' => 'No year specified']; break;
     		case 'top10artists': return isset($req['year']) ? pl_top10artists($req['year']) : ['error' => 'No year specified']; break;
-    		case 'delete': return isset($req['pl_date']) && isset($req['password']) ? pl_delete($req['pl_date'], $req['password']) :
+			case 'upload': return isset($req['data']) ? pl_upload($req['data']) : ['error' => 'No playlist data specified']; break;
+			case 'delete': return isset($req['pl_date']) && isset($req['password']) ? pl_delete($req['pl_date'], $req['password']) :
     		['error' => 'No playlist date or password specified']; break;
     		default: return [];
     	}

@@ -31,7 +31,6 @@ var playlist_app = new Vue({
 	el : "#playlist-app",
 	data : {
 		playlist_server : "http://chi2016.ru/playlist/server/playlist.php",
-		upload_server : "http://chi2016.ru/playlist/server/upload.php",
 		actual_date : false,
 		latest_date : false,
 		current_date : false,
@@ -269,25 +268,24 @@ var playlist_app = new Vue({
 			reader.readAsText(file, 'UTF-8');
 			reader.onload = function(event) {
 				var result = event.target.result;
-				var fileName = file.name; 
 				
-				fetch(this.upload_server,
+				fetch(this.playlist_server,
 					{
 						method: "POST",
 						headers: {
 							'Accept': 'application/json',
 							'Content-Type': 'application/json'
 						},
-						body: JSON.stringify({ data: result, name: fileName })
+						body: JSON.stringify({ action: 'upload', data: result })
 					})
 					.then((res) => { return res.json(); })
 					.then((data) => { console.log( "FETCH remote response", data  );
-						if (data.status == "ok" && data.pl_date) { 
+						if (data.ok && data.pl_date) { 
 							console.log('update data'); 
 							this.update_data(data.pl_date); 
 							this.actual_date = data.pl_date; 
 						}
-						else if (data.status == "error") this.showError(data.error);
+						else if (data.error) this.showError(data.error);
 						else this.showError("Error uploading playlist");
 				});
 
