@@ -465,7 +465,7 @@ function loadPlaylistFromData($data) {
 	$res_playlist = [];
 
 	$str = $data_arr[$i];
-	if (substr_count($str,"Playlist")<=0) return ["error" => "Error file format".$i];
+	if (substr_count($str,"Playlist")<=0) return ["error" => "Error file format"];
 	$i++;
 	
 	while ($i < count($data_arr)) {

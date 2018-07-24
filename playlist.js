@@ -93,8 +93,9 @@ var playlist_app = new Vue({
 			this.is_mobile = window.innerWidth < 800;
 		},
 		initDragAndDropEvents : function() {
-			let playlistContent = document.getElementById('playlist-content');
+			let playlistContent = document.body;
 			let self = this;
+
 			['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
 				playlistContent.addEventListener(eventName, preventDefaults, false);
 			  })
