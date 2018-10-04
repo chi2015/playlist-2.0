@@ -92,6 +92,11 @@ body {
 	padding: 5px 0;
 }
 
+.updown-items {
+	display: flex;
+	flex-direction: row;
+}
+
 @media screen and (min-width: 1263px) {
 	.main-block {
 		width: 1263px;
@@ -259,7 +264,13 @@ body {
 	background-image: url('star.png');
 }
 
-.pl-calendar, .pl-upload, .pl-new, .pl-up, .pl-down, .pl-prev, .pl-next {
+@media screen and (max-width: 845px) {
+	.pl-upload {
+		display: none!important;
+	}
+}
+
+.pl-calendar, .pl-upload, .pl-download, .pl-new, .pl-up, .pl-down, .pl-prev, .pl-next {
 		background-repeat: no-repeat;
 	}
 
@@ -274,21 +285,21 @@ body {
 }
 	
 @media screen and (min-width: 800px) {
-	.pl-calendar, .pl-upload, .pl-prev, .pl-next {
+	.pl-calendar, .pl-upload, .pl-download, .pl-prev, .pl-next {
 		background-size: 40px 40px;
 		background-position: 5px 5px;
 	}
 }
 
 @media screen and (max-width: 800px) and (orientation: landscape) {
-	.pl-calendar, .pl-upload, .pl-prev, .pl-next {
+	.pl-calendar, .pl-upload, .pl-download, .pl-prev, .pl-next {
 		background-size: 7vw 7vw;
 		background-position: 1vw 1vw;
 	}
 }
 
 @media screen and (max-width: 800px) and (orientation: portrait) {
-	.pl-calendar, .pl-upload, .pl-prev, .pl-next {
+	.pl-calendar, .pl-upload, .pl-download, .pl-prev, .pl-next {
 		background-size: 10vw 10vw;
 		background-position: 2vw 2vw;
 	}
@@ -300,6 +311,12 @@ body {
 
 .pl-upload {
 	background-image: url('upload-icon.png');
+}
+
+.pl-download {
+	background-image: url('upload-icon.png');
+	-webkit-transform: rotate(180deg);
+    transform: rotate(180deg);
 }
 
 .menu-item {
@@ -317,7 +334,7 @@ body {
 	background-color: #393939;
 }
 
-.main-menu, .pl-prev, .pl-next, .pl-calendar, .pl-upload {
+.main-menu, .pl-prev, .pl-next, .pl-calendar, .pl-upload, .pl-download {
 	color: #bbbbbb;
 	margin-right: 7px;
 	display: -webkit-box;
@@ -333,7 +350,7 @@ body {
 }
 
 @media screen and (min-width: 800px) {
-	.pl-prev, .pl-next, .pl-calendar, .pl-upload {
+	.pl-prev, .pl-next, .pl-calendar, .pl-upload, .pl-download {
 		width: 50px;
 		font-size: 30px;
 	}
@@ -352,7 +369,7 @@ body {
 
 @media screen and (max-width: 800px) and (orientation: landscape) {
 	
-	.main-menu, .pl-prev, .pl-next, .pl-calendar, .pl-upload {
+	.main-menu, .pl-prev, .pl-next, .pl-calendar, .pl-upload, .pl-download {
 		width: 9vw;
 		height: 9vw;
 		font-size: 6vw;
@@ -361,14 +378,14 @@ body {
 
 @media screen and (max-width: 800px) and (orientation: portrait) {
 	
-	.main-menu, .pl-prev, .pl-next, .pl-calendar, .pl-upload {
+	.main-menu, .pl-prev, .pl-next, .pl-calendar, .pl-upload, .pl-download {
 		width: 14vw;
 		height: 14vw;
 		font-size: 9vw;
 	}
 }
 
-.pl-upload {
+.pl-upload, .pl-download {
 	margin: 0!important;
 }
 

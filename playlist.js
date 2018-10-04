@@ -258,6 +258,38 @@ var playlist_app = new Vue({
 		openfile : function() {
 			document.getElementById('pl_file').click();
 		},
+		downloadPDF : function() {
+			function htmlDecode(input){
+				var e = document.createElement('div');
+				e.innerHTML = input;
+				// handle case of empty input
+				return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+			  }
+			  
+			let aListTableBody = [];
+			let bListTableBody = [];
+			let cListTableBody = [];
+			this.storage[this.actualDate].forEach((plItem) => {
+				console.log('pl item', plItem.artist)
+				if (plItem.score == 47) aListTableBody.push({ text: htmlDecode(plItem.artist)+ ' - '+htmlDecode(plItem.title), fontSize: 16 });
+				if (plItem.score == 28) bListTableBody.push({ text: htmlDecode(plItem.artist)+ ' - '+htmlDecode(plItem.title), fontSize: 16 });
+				if (plItem.score == 23) cListTableBody.push({ text: htmlDecode(plItem.artist)+ ' - '+htmlDecode(plItem.title), fontSize: 16 });
+			});
+			console.log(cListTableBody);
+			let docDefinition = {
+				header : 'Playlist Date: '+this.actualDate,
+				content : [
+					{ text: 'A-List', fontSize: 13, bold: true, style: 'header', marginTop: 10 },
+					...aListTableBody,
+					{ text: 'B-List', fontSize: 13, bold: true, style: 'header', marginTop: 30 },
+					...bListTableBody,
+					{ text: 'C-List', fontSize: 13, bold: true, style: 'header', marginTop: 30 },
+					...cListTableBody
+				]
+			};
+
+			pdfMake.createPdf(docDefinition).open();
+		},
 		changefile : function() {
 			var file = this.$refs.pl_file.files[0];
 			this.upload_file(file);

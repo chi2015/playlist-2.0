@@ -17,6 +17,7 @@
 				<div class="lm-item menu-item" v-on:click="current()">Current</div>
 				<div class="lm-item menu-item" v-on:click="archive">Archive</div>
 				<div class="lm-item menu-item" v-on:click="openfile()">Add</div>
+				<div class="lm-item menu-item" v-on:click="downloadPDF()">Download</div>
 				<div class="lm-item menu-item" v-on:click="top100()">Top 100</div>
 				<div class="lm-item menu-item" v-on:click="top10artists()">Top 10 Artists</div>
 				<div class="lm-item menu-item delete-menu-item" v-on:click="confirm_delete()">Delete</div>
@@ -28,7 +29,11 @@
 				<div class="pl-calendar menu-item" v-if="mode == 'main'" v-on:click="archive"></div>
 				<div class="pl-next menu-item" v-on:click="move('right')"></div>
 			</div>
-			<div class="pl-upload menu-item" title="Add playlist" v-on:click="openfile()"></div>
+			<div class="updown-items">
+				<div class="pl-upload menu-item" title="Add playlist" v-on:click="openfile()"></div>
+				<div class="pl-download menu-item" title="Download PDF" v-on:click="downloadPDF()"></div>
+			</div>
+			
 	     </div>
 	     <div id="playlist-content" class="list" v-bind:class="{ list : true, 'pl-loading' : loading}">
 			<div v-if="dragover" class="pl-dragover"></div> 
@@ -122,7 +127,9 @@
 		<script type="text/javascript" src="vue-select.2.5.1.js"></script>
 	    <script type="text/javascript" src="luxon.min.js"></script>
 	    <script type="text/javascript" src="vue-datetime.js"></script>
-	    <script type="text/javascript" src="moment.min.2.18.1.js"></script>
-	    <script type="text/javascript" src="playlist.js?r=040720181604"></script>	
+		<script type="text/javascript" src="moment.min.2.18.1.js"></script>
+		<script type="text/javascript" src="pdfmake.min.js"></script>
+		<script type="text/javascript" src="vfs_fonts.js"></script>
+	    <script type="text/javascript" src="playlist.js?r=041020181257"></script>	
 	</body>
 </html>
