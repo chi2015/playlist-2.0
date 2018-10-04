@@ -378,15 +378,23 @@ body {
 	display: flex;
 }
 
-input#pl_date, select#pl_year {
+input#pl_date, #pl_year .dropdown-toggle {
 	background-color: #313131;
 	color: #bbbbbb;
 	border: 0;
 	text-align: center;
 }
 
+#pl_year .dropdown-toggle .clear {
+	display: none;
+}
+
+#pl_year .selected-tag {
+	color: #bbbbbb;
+}
+
 @media screen and (max-width: 800px) and (orientation: landscape) {
-	input#pl_date, select#pl_year {
+	input#pl_date, #pl_year .dropdown-toggle {
 		width: 36vw;
 		height: 9vw;
 		font-size: 5vw;
@@ -395,7 +403,7 @@ input#pl_date, select#pl_year {
 }
 
 @media screen and (max-width: 800px) and (orientation: portrait) {
-	input#pl_date, select#pl_year {
+	input#pl_date, #pl_year .dropdown-toggle {
 		width: 45vw;
 		height: 14vw;
 		font-size: 7vw;
@@ -409,14 +417,14 @@ input#pl_date, select#pl_year {
 		max-width: 800px;
 	}
 	
-	input#pl_date, select#pl_year {
+	input#pl_date, #pl_year .dropdown-toggle {
 		width: 270px;
 		height: 50px;
 		font-size: 26px;
 		padding: 7px;
 	}
 
-	select#pl_year {
+	#pl_year .dropdown-toggle {
 		margin-right: 7px;
 	}
 }

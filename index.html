@@ -24,9 +24,7 @@
 			<div class="date-block">
 				<div class="pl-prev menu-item" v-on:click="move('left')"></div>
 				<datetime id="pl_date" v-model="actual_date" ref="picker" v-if="mode == 'main'"></datetime>
-				<select id="pl_year" v-if="mode == 'top100' || mode == 'top10artists'" v-model="top100year">
-					<option v-for="year in years_array" :value="year">{{year}}</option>
-				</select>
+				<v-select id="pl_year" v-if="mode == 'top100' || mode == 'top10artists'"  v-model="top100year" :options="years_array"></v-select>
 				<div class="pl-calendar menu-item" v-if="mode == 'main'" v-on:click="archive"></div>
 				<div class="pl-next menu-item" v-on:click="move('right')"></div>
 			</div>
@@ -120,7 +118,8 @@
 			</transition>
 		</script>
 	    
-	    <script type="text/javascript" src="vue-2.5.13.js"></script>
+		<script type="text/javascript" src="vue-2.5.13.js"></script>
+		<script type="text/javascript" src="vue-select.2.5.1.js"></script>
 	    <script type="text/javascript" src="luxon.min.js"></script>
 	    <script type="text/javascript" src="vue-datetime.js"></script>
 	    <script type="text/javascript" src="moment.min.2.18.1.js"></script>

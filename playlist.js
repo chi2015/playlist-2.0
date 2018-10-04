@@ -27,6 +27,8 @@ Vue.component('modal', {
 	}
   });
 
+Vue.component('v-select', VueSelect.VueSelect);
+
 var playlist_app = new Vue({
 	el : "#playlist-app",
 	data : {
