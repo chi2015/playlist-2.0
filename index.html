@@ -1,8 +1,7 @@
 <html lang="en">
     <head>
     	<title>Playlist</title>
-    	<link rel="stylesheet" type="text/css" href="playlist2.css?r=040720181617" />
-		<link rel="stylesheet" type="text/css" href="vue-datetime.css" />
+    	<link rel="stylesheet" type="text/css" href="playlist2.css?r=1914" />
 		<link rel="stylesheet" type="text/css" href="modal.css" />
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -25,7 +24,8 @@
 			</div>
 			<div class="date-block">
 				<div class="pl-prev menu-item" v-on:click="move('left')"></div>
-				<datetime class="pl_date" v-model="actual_date" ref="picker" v-if="mode == 'main'"></datetime>
+				<!--<datetime class="pl_date" v-model="actual_date" ref="picker" v-if="mode == 'main'"></datetime>-->
+				<input type="date" id="calendar-date" class="pl_date" v-model="actual_date" v-if="mode == 'main'"></input>
 				<v-select id="pl_year" v-if="mode == 'top100' || mode == 'top10artists'"  v-model="top100year" :options="years_array"></v-select>
 				<div class="pl-calendar menu-item" v-if="mode == 'main'" v-on:click="archive"></div>
 				<div class="pl-next menu-item" v-on:click="move('right')"></div>
@@ -126,11 +126,9 @@
 	    
 		<script type="text/javascript" src="vue.min.2.5.17.js"></script>
 		<script type="text/javascript" src="vue-select.2.5.1.js"></script>
-	    <script type="text/javascript" src="luxon.min.js"></script>
-	    <script type="text/javascript" src="vue-datetime.js"></script>
 		<script type="text/javascript" src="moment.min.2.22.2.js"></script>
 		<script type="text/javascript" src="pdfmake.min.js"></script>
 		<script type="text/javascript" src="vfs_fonts.js"></script>
-	    <script type="text/javascript" src="playlist.js?r=041020181257"></script>	
+	    <script type="text/javascript" src="playlist.js?r=1914"></script>	
 	</body>
 </html>

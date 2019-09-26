@@ -215,7 +215,7 @@ var playlist_app = new Vue({
 			}.bind(this));
 		},
 		archive: function(e) {
-			this.$refs.picker.open(e);
+			document.querySelector('#calendar-date').focus();
 		},
 		nextprev : function(is_next) {
 			var method = is_next ? "next" : "prev";

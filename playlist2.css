@@ -395,11 +395,12 @@ body {
 	display: flex;
 }
 
-input.vdatetime-input, #pl_year .dropdown-toggle {
+input.pl_date, #pl_year .dropdown-toggle {
 	background-color: #313131;
 	color: #bbbbbb;
 	border: 0;
 	text-align: center;
+	font-family: "Verdana";
 }
 
 #pl_year .dropdown-toggle .clear {
@@ -411,7 +412,7 @@ input.vdatetime-input, #pl_year .dropdown-toggle {
 }
 
 @media screen and (max-width: 800px) and (orientation: landscape) {
-	input.vdatetime-input, #pl_year .dropdown-toggle {
+	input.pl_date, #pl_year .dropdown-toggle {
 		width: 36vw;
 		height: 9vw;
 		font-size: 5vw;
@@ -420,7 +421,7 @@ input.vdatetime-input, #pl_year .dropdown-toggle {
 }
 
 @media screen and (max-width: 800px) and (orientation: portrait) {
-	input.vdatetime-input, #pl_year .dropdown-toggle {
+	input.pl_date, #pl_year .dropdown-toggle {
 		width: 45vw;
 		height: 14vw;
 		font-size: 7vw;
@@ -434,7 +435,7 @@ input.vdatetime-input, #pl_year .dropdown-toggle {
 		max-width: 800px;
 	}
 	
-	input.vdatetime-input, #pl_year .dropdown-toggle {
+	input.pl_date, #pl_year .dropdown-toggle {
 		width: 270px;
 		height: 50px;
 		font-size: 26px;
