@@ -15,7 +15,6 @@
 			<div class="left-menu" v-if="showLeftMenu">
 				<div class="lm-item menu-item" v-on:click="latest()">Latest</div>
 				<div class="lm-item menu-item" v-on:click="current()">Current</div>
-				<div class="lm-item menu-item" v-on:click="archive">Archive</div>
 				<div class="lm-item menu-item" v-on:click="openfile()">Add</div>
 				<div class="lm-item menu-item" v-on:click="downloadPDF()">Download</div>
 				<div class="lm-item menu-item" v-on:click="top100()">Top 100</div>
@@ -24,10 +23,8 @@
 			</div>
 			<div class="date-block">
 				<div class="pl-prev menu-item" v-on:click="move('left')"></div>
-				<!--<datetime class="pl_date" v-model="actual_date" ref="picker" v-if="mode == 'main'"></datetime>-->
 				<input type="date" id="calendar-date" class="pl_date" v-model="actual_date" v-if="mode == 'main'"></input>
 				<v-select id="pl_year" v-if="mode == 'top100' || mode == 'top10artists'"  v-model="top100year" :options="years_array"></v-select>
-				<div class="pl-calendar menu-item" v-if="mode == 'main'" v-on:click="archive"></div>
 				<div class="pl-next menu-item" v-on:click="move('right')"></div>
 			</div>
 			<div class="updown-items">
